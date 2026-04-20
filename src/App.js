@@ -83,7 +83,7 @@ useEffect(() => {
 
     try {
       // ✅ Calls your local backend — no CORS error
-      const response = await fetch("http://localhost:3001/api/chat", {
+      const response = await fetch("my-chatbot-production-5fe3.up.railway.app", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
