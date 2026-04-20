@@ -3,17 +3,17 @@ import { useState, useRef, useEffect } from "react";
 
 const DEFAULT_CONFIG = {
   businessName: "NexaCorp",
-  tagline: "Premium Business Solutions",
-  avatarEmoji: "⚡",
+  tagline: "Smart Business Solutions",
+  avatarEmoji: "logo192.png",
   welcomeMessage: "Welcome! I'm your intelligent business assistant. I can answer questions about our services, pricing, availability, and more. How can I help you today?",
   systemPrompt: `You are an elite AI business assistant for NexaCorp, a premium business solutions company.
 
 Business Information:
-- Company: NexaCorp Premium Solutions
+- Company: NexaCorp Smart Solutions
 - Services: AI Chatbot Development ($200-$500), Web Development ($300-$800), Business Automation ($150-$400), Consulting ($100/hr)
 - Hours: Monday-Friday 9AM-6PM EST, Saturday 10AM-2PM EST
-- Response Time: Within 2 hours on business days
-- Contact: hello@nexacorp.com | +1 (555) 123-4567
+- Response Time: Within 1 hours on business days
+- Contact: contact@nexacorp.com | +92 319 5868013
 - Location: Remote / Worldwide
 - Guarantee: 100% satisfaction, unlimited revisions
 
