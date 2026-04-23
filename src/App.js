@@ -3,9 +3,7 @@ import tameenLogo from "./assets/tameen24-logo.jpeg";
 import chatbotIcon from "./assets/chatbot-icon.svg";
 
 const DEFAULT_RAILWAY_BASE_URL = "https://my-chatbot-production-7d09.up.railway.app";
-const LOCAL_BASE_URL = process.env.REACT_APP_LOCAL_API_BASE_URL || "http://localhost:3001";
-const PROD_BASE_URL = process.env.REACT_APP_API_BASE_URL || DEFAULT_RAILWAY_BASE_URL;
-const API_BASE_URL = (window.location.hostname === "localhost" ? LOCAL_BASE_URL : PROD_BASE_URL).replace(/\/$/, "");
+const API_BASE_URL = (process.env.REACT_APP_API_BASE_URL || DEFAULT_RAILWAY_BASE_URL).replace(/\/$/, "");
 
 const API_URL = `${API_BASE_URL}/api/chat`;
 const LEADS_URL = `${API_BASE_URL}/api/lead`;
