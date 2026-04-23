@@ -1,766 +1,508 @@
-
 import { useState, useRef, useEffect } from "react";
+import tameenLogo from "./assets/tameen24-logo.jpeg";
+import chatbotIcon from "./assets/chatbot-icon.svg";
 
-const DEFAULT_CONFIG = {
-  businessName: "NexaCorp",
-  tagline: "Smart Business Solutions",
-  avatarEmoji: "logo192.png",
-  welcomeMessage: "Welcome! I'm your intelligent business assistant. I can answer questions about our services, pricing, availability, and more. How can I help you today?",
-  systemPrompt: `You are an elite AI business assistant for NexaCorp, a premium business solutions company.
+const API_URL = window.location.hostname === "localhost"
+  ? "http://localhost:3001/api/chat"
+  : "https://my-chatbot-production-7d09.up.railway.app/api/chat";
 
-Business Information:
-- Company: NexaCorp Smart Solutions
-- Services: AI Chatbot Development ($200-$500), Web Development ($300-$800), Business Automation ($150-$400), Consulting ($100/hr)
-- Hours: Monday-Friday 9AM-6PM EST, Saturday 10AM-2PM EST
-- Response Time: Within 1 hours on business days
-- Contact: contact@nexacorp.com | +92 319 5868013
-- Location: Remote / Worldwide
-- Guarantee: 100% satisfaction, unlimited revisions
+const LEADS_URL = window.location.hostname === "localhost"
+  ? "http://localhost:3001/api/lead"
+  : "https://my-chatbot-production-7d09.up.railway.app/api/lead";
 
-Personality: Professional, warm, confident. You're proud of the quality you deliver.
-Rules:
-- Keep answers under 4 sentences unless more detail is needed
-- Always end with a helpful follow-up question or call-to-action
-- If asked about pricing, give ranges and offer a free consultation
-- Never make up information not listed above`,
+const T = {
+  en: {
+    dir: "ltr",
+    bubbleMsg: "🛡️ Get your insurance quote in 2 minutes!",
+    onlineStatus: "Online · Replies instantly",
+    typing: "Typing...",
+    placeholder: "Type your message...",
+    poweredBy: "Powered by AI · Tameen24",
+    quickReplies: [
+      { label: "🚗 Car Insurance", text: "I need car insurance" },
+      { label: "🏥 Medical Insurance", text: "I need medical insurance" },
+      { label: "🏠 Property Insurance", text: "I need property insurance" },
+      { label: "💰 Get a Quote", text: "I want to get a quote" },
+      { label: "📋 Claim Help", text: "I need help with a claim" },
+      { label: "🔄 Renew Policy", text: "I want to renew my policy" },
+    ],
+    leadTitle: "Get Your Free Quote",
+    leadSubtitle: "Our expert will contact you within 1 hour",
+    nameLabel: "Full Name", phoneLabel: "Phone Number",
+    emailLabel: "Email Address", insuranceLabel: "Insurance Type",
+    submitBtn: "Get Free Quote →",
+    thankYou: "✅ Thank you! Our agent will call you within 1 hour.",
+    namePh: "Enter your full name", phonePh: "+971 XX XXX XXXX", emailPh: "your@email.com",
+    insuranceTypes: ["Car Insurance","Medical Insurance","Property Insurance","Marine Insurance","Fire Insurance","Life Insurance","Other"],
+    welcome: "Welcome to Tameen24! 🛡️\n\nI'm your AI insurance assistant. I can help you with:\n• Car & Motor Insurance\n• Medical & Health Insurance\n• Property Insurance\n• Claims & Renewals\n\nHow can I help you today?",
+    langBtn: "عربي",
+  },
+  ar: {
+    dir: "rtl",
+    bubbleMsg: "🛡️ احصل على عرض تأمين خلال دقيقتين!",
+    onlineStatus: "متصل · يرد فوراً",
+    typing: "يكتب...",
+    placeholder: "اكتب رسالتك...",
+    poweredBy: "مدعوم بالذكاء الاصطناعي · تأمين24",
+    quickReplies: [
+      { label: "🚗 تأمين السيارة", text: "أحتاج تأمين سيارة" },
+      { label: "🏥 التأمين الطبي", text: "أحتاج تأمين طبي" },
+      { label: "🏠 تأمين الممتلكات", text: "أحتاج تأمين ممتلكات" },
+      { label: "💰 احصل على عرض", text: "أريد الحصول على عرض سعر" },
+      { label: "📋 مساعدة في المطالبة", text: "أحتاج مساعدة في المطالبة" },
+      { label: "🔄 تجديد الوثيقة", text: "أريد تجديد وثيقتي" },
+    ],
+    leadTitle: "احصل على عرض مجاني",
+    leadSubtitle: "سيتواصل معك خبيرنا خلال ساعة",
+    nameLabel: "الاسم الكامل", phoneLabel: "رقم الهاتف",
+    emailLabel: "البريد الإلكتروني", insuranceLabel: "نوع التأمين",
+    submitBtn: "احصل على عرض مجاني ←",
+    thankYou: "✅ شكراً! سيتصل بك وكيلنا خلال ساعة واحدة.",
+    namePh: "أدخل اسمك الكامل", phonePh: "٩٧١ XX XXX XXXX+", emailPh: "بريدك@email.com",
+    insuranceTypes: ["تأمين السيارة","التأمين الطبي","تأمين الممتلكات","التأمين البحري","تأمين الحريق","التأمين على الحياة","أخرى"],
+    welcome: "مرحباً بك في تأمين24! 🛡️\n\nأنا مساعدك الذكي للتأمين. يمكنني مساعدتك في:\n• تأمين السيارات\n• التأمين الطبي والصحي\n• تأمين الممتلكات\n• المطالبات والتجديد\n\nكيف يمكنني مساعدتك اليوم؟",
+    langBtn: "English",
+  },
 };
 
-const QUICK_REPLIES = [
-  { label: "💼 Services", text: "What services do you offer?" },
-  { label: "💰 Pricing", text: "How much does it cost?" },
-  { label: "⏰ Availability", text: "What are your working hours?" },
-  { label: "📞 Contact", text: "How can I contact you?" },
-  { label: "⚡ Get Started", text: "How do I get started?" },
-  { label: "🛡️ Guarantee", text: "Do you offer any guarantees?" },
-];
+const SYSTEM = {
+  en: `You are an expert AI insurance assistant for Tameen24, a leading UAE insurance company.
+Services: Car Insurance, Medical Insurance, Property Insurance, Liability, Fire, Marine Insurance.
+Coverage: All UAE Emirates - Dubai, Abu Dhabi, Sharjah, Ajman, RAK, Fujairah.
+Rules: Keep answers under 4 sentences. Never give exact prices - say our agent will give the best rate. After 2-3 questions suggest a free quote. Always end with a helpful question.`,
+  ar: `أنت مساعد تأمين ذكي خبير لشركة تأمين24 في الإمارات العربية المتحدة.
+الخدمات: تأمين السيارات، التأمين الطبي، تأمين الممتلكات، تأمين المسؤولية، تأمين الحريق، التأمين البحري.
+التغطية: جميع إمارات الإمارات - دبي، أبوظبي، الشارقة، عجمان، رأس الخيمة، الفجيرة.
+القواعد: اجعل إجاباتك موجزة لا تتجاوز 4 جمل. لا تعطِ أسعاراً محددة. اقترح عرضاً مجانياً بعد 2-3 أسئلة. اختم دائماً بسؤال مفيد.`,
+};
 
-const PARTICLE_COUNT = 20;
+function LeadForm({ lang, onClose }) {
+  const t = T[lang];
+  const [form, setForm] = useState({ name: "", phone: "", email: "", insurance: t.insuranceTypes[0] });
+  const [submitted, setSubmitted] = useState(false);
+  const [saving, setSaving] = useState(false);
 
-export default function PremiumChatbot() {
+  async function handleSubmit() {
+    if (!form.name || !form.phone) return;
+    setSaving(true);
+    try {
+      await fetch(LEADS_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...form, lang, timestamp: new Date().toISOString() }),
+      });
+    } catch (e) { console.error(e); }
+    setSaving(false);
+    setSubmitted(true);
+    setTimeout(onClose, 3000);
+  }
+
+  if (submitted) return (
+    <div style={{ padding: "24px", textAlign: "center" }}>
+      <div style={{ fontSize: "40px", marginBottom: "10px" }}>✅</div>
+      <div style={{ color: "#00a651", fontWeight: "700", fontSize: "14px" }}>{t.thankYou}</div>
+    </div>
+  );
+
+  return (
+    <div style={{ padding: "16px 18px", direction: t.dir }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "2px" }}>
+        <div style={{ fontWeight: "800", fontSize: "15px", color: "#1a1a2e" }}>{t.leadTitle}</div>
+        <button
+          onClick={onClose}
+          aria-label="Close quote form"
+          style={{
+            width: "28px",
+            height: "28px",
+            border: "1px solid #d9e7d9",
+            borderRadius: "8px",
+            background: "#fff",
+            color: "#666",
+            cursor: "pointer",
+            fontSize: "16px",
+            lineHeight: "1",
+          }}
+        >
+          ✕
+        </button>
+      </div>
+      <div style={{ fontSize: "11px", color: "#888", marginBottom: "14px" }}>{t.leadSubtitle}</div>
+      {[["name",t.nameLabel,t.namePh,"text"],["phone",t.phoneLabel,t.phonePh,"tel"],["email",t.emailLabel,t.emailPh,"email"]].map(([k,l,p,tp]) => (
+        <div key={k} style={{ marginBottom: "10px" }}>
+          <label style={{ display: "block", fontSize: "11px", fontWeight: "700", color: "#555", marginBottom: "3px" }}>{l}</label>
+          <input type={tp} placeholder={p} value={form[k]}
+            onChange={e => setForm({ ...form, [k]: e.target.value })}
+            style={{ width: "100%", padding: "9px 11px", border: "1.5px solid #e0e0e0", borderRadius: "9px", fontSize: "13px", fontFamily: "inherit", outline: "none", boxSizing: "border-box" }} />
+        </div>
+      ))}
+      <div style={{ marginBottom: "14px" }}>
+        <label style={{ display: "block", fontSize: "11px", fontWeight: "700", color: "#555", marginBottom: "3px" }}>{t.insuranceLabel}</label>
+        <select value={form.insurance} onChange={e => setForm({ ...form, insurance: e.target.value })}
+          style={{ width: "100%", padding: "9px 11px", border: "1.5px solid #e0e0e0", borderRadius: "9px", fontSize: "13px", fontFamily: "inherit", outline: "none", background: "#fff", boxSizing: "border-box" }}>
+          {t.insuranceTypes.map(i => <option key={i}>{i}</option>)}
+        </select>
+      </div>
+      <button onClick={handleSubmit} disabled={saving || !form.name || !form.phone}
+        style={{ width: "100%", padding: "11px", background: saving ? "#ccc" : "linear-gradient(135deg,#00a651,#007a3d)", color: "#fff", border: "none", borderRadius: "9px", fontSize: "13px", fontWeight: "700", cursor: saving ? "not-allowed" : "pointer", fontFamily: "inherit" }}>
+        {saving ? "..." : t.submitBtn}
+      </button>
+    </div>
+  );
+}
+
+export default function Tameen24Chat() {
+  const [lang, setLang] = useState("en");
+  const [isOpen, setIsOpen] = useState(false);
+  const [showLeadForm, setShowLeadForm] = useState(false);
+  const [autoLeadShownOnce, setAutoLeadShownOnce] = useState(false);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
-  const [config, setConfig] = useState(DEFAULT_CONFIG);
-  const [showConfig, setShowConfig] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
-  const [particles] = useState(() =>
-    Array.from({ length: PARTICLE_COUNT }, (_, i) => ({
-      id: i,
-      x: Math.random() * 100,
-      y: Math.random() * 100,
-      size: Math.random() * 3 + 1,
-      duration: Math.random() * 15 + 10,
-      delay: Math.random() * 5,
-    }))
-  );
   const bottomRef = useRef(null);
   const inputRef = useRef(null);
+  const t = T[lang];
 
-useEffect(() => {
-  setMessages([{ role: "assistant", content: config.welcomeMessage, time: now() }]);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-}, []);
+  useEffect(() => {
+    setMessages([{ role: "assistant", content: T[lang].welcome, time: now() }]);
+    setShowLeadForm(false);
+    setAutoLeadShownOnce(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lang]);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
 
-  function now() {
-    return new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-  }
+  useEffect(() => {
+    const userMsgCount = messages.filter(m => m.role === "user").length;
+    if (!autoLeadShownOnce && userMsgCount >= 4 && !showLeadForm) {
+      setTimeout(() => {
+        setShowLeadForm(true);
+        setAutoLeadShownOnce(true);
+      }, 700);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [messages]);
+
+  function now() { return new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }); }
 
   async function sendMessage(text) {
     const userText = (text || input).trim();
     if (!userText || loading) return;
-
-    const newMessages = [...messages, { role: "user", content: userText, time: now() }];
-    setMessages(newMessages);
-    setInput("");
-    setLoading(true);
-    setIsTyping(true);
-
-    await new Promise((r) => setTimeout(r, 600));
-
+    const lowered = userText.toLowerCase();
+    const leadIntentWords = [
+      "quote", "price", "cost", "buy", "renew", "renewal", "policy", "call me", "contact me",
+      "عرض", "سعر", "تكلفة", "كم", "تجديد", "وثيقة", "اتصل", "تواصل",
+    ];
+    if (leadIntentWords.some(k => lowered.includes(k))) {
+      setShowLeadForm(true);
+    }
+    const newMsgs = [...messages, { role: "user", content: userText, time: now() }];
+    setMessages(newMsgs);
+    setInput(""); setLoading(true); setIsTyping(true);
+    await new Promise(r => setTimeout(r, 500));
     try {
-      // ✅ Calls your local backend — no CORS error
-      const response = await fetch("https://my-chatbot-production-7d09.up.railway.app/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
-          max_tokens: 1000,
-          system: config.systemPrompt,
-          messages: newMessages.map((m) => ({ role: m.role, content: m.content })),
-        }),
+      const res = await fetch(API_URL, {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ max_tokens: 500, system: SYSTEM[lang], messages: newMsgs.map(m => ({ role: m.role, content: m.content })) }),
       });
-
-      const data = await response.json();
-      const reply = data.content?.[0]?.text || "I apologize, something went wrong. Please try again.";
+      const data = await res.json();
+      if (!res.ok && data?.error) console.warn("Chat API error:", data.error);
+      if (!res.ok && data?.debug) console.warn("Chat API debug:", data.debug);
+      const reply = data.content?.[0]?.text || "Sorry, please try again.";
       setIsTyping(false);
-      setMessages([...newMessages, { role: "assistant", content: reply, time: now() }]);
-    } catch (err) {
-      console.error(err);
+      setMessages([...newMsgs, { role: "assistant", content: reply, time: now() }]);
+    } catch {
       setIsTyping(false);
-      setMessages([
-        ...newMessages,
-        {
-          role: "assistant",
-          content: "⚠️ Could not reach server. Make sure your backend is running with: node server.js",
-          time: now(),
-        },
-      ]);
-    } finally {
-      setLoading(false);
-      inputRef.current?.focus();
-    }
+      setMessages([...newMsgs, { role: "assistant", content: lang === "en" ? "⚠️ Connection error. Please try again." : "⚠️ خطأ في الاتصال.", time: now() }]);
+    } finally { setLoading(false); inputRef.current?.focus(); }
   }
 
-  function handleKey(e) {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      sendMessage();
-    }
-  }
-
-  function clearChat() {
-    setMessages([{ role: "assistant", content: config.welcomeMessage, time: now() }]);
-  }
+  function handleKey(e) { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); } }
+  function toggleChat() { setIsOpen(!isOpen); }
+  function switchLang() { setLang(l => l === "en" ? "ar" : "en"); setShowLeadForm(false); }
 
   const css = `
-    @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap');
-
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background: #ffffff; min-height: 100vh; }
 
-    .chatbot-root {
+    .demo-bg {
       min-height: 100vh;
-      background: #050810;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: 'DM Sans', sans-serif;
-      padding: 20px;
-      position: relative;
-      overflow: hidden;
+      background: linear-gradient(180deg, #ffffff 0%, #f8fffb 52%, #f3fcf7 100%);
+      display: flex; align-items: center; justify-content: center;
+      padding: 28px 20px 110px; position: relative; overflow: hidden;
     }
-
-    .bg-grid {
-      position: fixed; inset: 0;
-      background-image:
-        linear-gradient(rgba(0,212,170,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,212,170,0.03) 1px, transparent 1px);
-      background-size: 40px 40px;
+    .demo-bg::before {
+      content: ''; position: absolute; inset: 0;
+      background-image: radial-gradient(circle at 16% 24%, rgba(0,166,81,0.13) 0%, transparent 45%), radial-gradient(circle at 84% 12%, rgba(0,166,81,0.12) 0%, transparent 42%);
+    }
+    .demo-bg::after {
+      content: ''; position: absolute; left: 50%; transform: translateX(-50%); bottom: -140px;
+      width: min(860px, 130vw); height: 280px;
+      background: radial-gradient(ellipse at center, rgba(0, 166, 81, 0.10) 0%, rgba(0, 166, 81, 0.04) 35%, transparent 70%);
       pointer-events: none;
     }
-
-    .bg-glow-1 {
-      position: fixed;
-      width: 600px; height: 600px;
-      background: radial-gradient(circle, rgba(0,212,170,0.08) 0%, transparent 70%);
-      top: -200px; left: -200px;
-      pointer-events: none;
-    }
-
-    .bg-glow-2 {
-      position: fixed;
-      width: 500px; height: 500px;
-      background: radial-gradient(circle, rgba(0,153,255,0.06) 0%, transparent 70%);
-      bottom: -150px; right: -150px;
-      pointer-events: none;
-    }
-
-    .particle {
-      position: fixed;
-      border-radius: 50%;
-      background: rgba(0,212,170,0.4);
-      pointer-events: none;
-      animation: float linear infinite;
-    }
-
-    @keyframes float {
-      0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
-      10% { opacity: 1; }
-      90% { opacity: 1; }
-      100% { transform: translateY(-100px) rotate(720deg); opacity: 0; }
-    }
-
-    .main-wrapper {
-      width: 100%;
-      max-width: 780px;
+    .hero-panel {
+      width: min(980px, 94vw);
       position: relative;
-      z-index: 10;
-    }
-
-    .brand-bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 16px;
-      padding: 0 4px;
-    }
-
-    .brand-logo {
-      font-family: 'Syne', sans-serif;
-      font-weight: 800;
-      font-size: 22px;
-      color: #fff;
-      letter-spacing: -0.5px;
-    }
-
-    .brand-logo span { color: #00d4aa; }
-
-    .brand-badge {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      background: rgba(0,212,170,0.1);
-      border: 1px solid rgba(0,212,170,0.25);
-      border-radius: 20px;
-      padding: 4px 12px;
-      font-size: 11px;
-      color: #00d4aa;
-      font-weight: 500;
-    }
-
-    .badge-dot {
-      width: 6px; height: 6px;
-      background: #00d4aa;
-      border-radius: 50%;
-      animation: pulse 2s infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.5; transform: scale(0.8); }
-    }
-
-    .chat-window {
-      background: rgba(8,14,28,0.95);
-      border: 1px solid rgba(0,212,170,0.15);
-      border-radius: 24px;
-      overflow: hidden;
-      box-shadow:
-        0 0 0 1px rgba(0,212,170,0.05),
-        0 40px 80px rgba(0,0,0,0.6),
-        inset 0 1px 0 rgba(255,255,255,0.05);
-    }
-
-    .chat-header {
-      background: linear-gradient(135deg, rgba(0,212,170,0.12), rgba(0,153,255,0.08));
-      border-bottom: 1px solid rgba(0,212,170,0.12);
-      padding: 18px 24px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      position: relative;
-    }
-
-    .chat-header::after {
-      content: '';
-      position: absolute;
-      bottom: 0; left: 24px; right: 24px;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(0,212,170,0.4), transparent);
-    }
-
-    .agent-info { display: flex; align-items: center; gap: 14px; }
-
-    .agent-avatar {
-      width: 46px; height: 46px;
-      background: linear-gradient(135deg, #00d4aa, #0099ff);
-      border-radius: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 22px;
-      position: relative;
-      box-shadow: 0 0 20px rgba(0,212,170,0.3);
-    }
-
-    .agent-avatar::after {
-      content: '';
-      position: absolute;
-      bottom: -2px; right: -2px;
-      width: 12px; height: 12px;
-      background: #00d4aa;
-      border: 2px solid #050810;
-      border-radius: 50%;
-    }
-
-    .agent-name {
-      font-family: 'Syne', sans-serif;
-      font-weight: 700;
-      font-size: 16px;
-      color: #fff;
-    }
-
-    .agent-status {
-      font-size: 12px;
-      color: #00d4aa;
-      margin-top: 2px;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-
-    .header-actions { display: flex; gap: 8px; }
-
-    .btn-icon {
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 10px;
-      color: #8899aa;
-      padding: 8px 12px;
-      cursor: pointer;
-      font-size: 12px;
-      transition: all 0.2s;
-      white-space: nowrap;
-    }
-
-    .btn-icon:hover {
-      background: rgba(0,212,170,0.1);
-      border-color: rgba(0,212,170,0.3);
-      color: #00d4aa;
-    }
-
-    .config-panel {
-      background: rgba(0,0,0,0.4);
-      border-bottom: 1px solid rgba(0,212,170,0.1);
-      padding: 20px 24px;
-    }
-
-    .config-title {
-      font-family: 'Syne', sans-serif;
-      font-size: 11px;
-      font-weight: 700;
-      color: #00d4aa;
-      letter-spacing: 2px;
-      margin-bottom: 14px;
-    }
-
-    .config-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-bottom: 12px;
-    }
-
-    .config-field label {
-      display: block;
-      font-size: 11px;
-      color: #667788;
-      margin-bottom: 5px;
-      font-weight: 500;
-    }
-
-    .config-input {
-      width: 100%;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(0,212,170,0.2);
-      border-radius: 8px;
-      padding: 8px 12px;
-      color: #e0e8f0;
-      font-size: 13px;
-      font-family: 'DM Sans', sans-serif;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-
-    .config-input:focus { border-color: rgba(0,212,170,0.5); }
-
-    .config-textarea {
-      width: 100%;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(0,212,170,0.2);
-      border-radius: 8px;
-      padding: 10px 12px;
-      color: #e0e8f0;
-      font-size: 12px;
-      font-family: 'DM Sans', sans-serif;
-      resize: vertical;
-      outline: none;
-      line-height: 1.5;
-      transition: border-color 0.2s;
-    }
-
-    .config-textarea:focus { border-color: rgba(0,212,170,0.5); }
-    .config-hint { font-size: 11px; color: #445566; margin-top: 8px; }
-
-    .messages-area {
-      height: 420px;
-      overflow-y: auto;
-      padding: 24px;
+      z-index: 1;
+      border-radius: 30px;
+      border: 1px solid #d9f0e4;
+      background: linear-gradient(180deg, rgba(255,255,255,0.96), rgba(248,255,251,0.98));
+      box-shadow: 0 24px 70px rgba(0, 83, 43, 0.12), 0 2px 0 rgba(255,255,255,0.9) inset;
+      padding: 34px 26px 28px;
       display: flex;
       flex-direction: column;
-      gap: 16px;
-    }
-
-    .messages-area::-webkit-scrollbar { width: 3px; }
-    .messages-area::-webkit-scrollbar-track { background: transparent; }
-    .messages-area::-webkit-scrollbar-thumb { background: rgba(0,212,170,0.2); border-radius: 3px; }
-
-    .message-row {
-      display: flex;
-      gap: 10px;
-      animation: msgIn 0.3s ease;
-    }
-
-    .message-row.user { flex-direction: row-reverse; }
-
-    @keyframes msgIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .msg-avatar {
-      width: 32px; height: 32px;
-      border-radius: 10px;
-      display: flex;
       align-items: center;
-      justify-content: center;
-      font-size: 14px;
-      flex-shrink: 0;
-      margin-top: 2px;
+      gap: 14px;
     }
-
-    .msg-avatar.bot {
-      background: linear-gradient(135deg, #00d4aa22, #0099ff22);
-      border: 1px solid rgba(0,212,170,0.3);
-    }
-
-    .msg-avatar.user-av {
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.08);
-    }
-
-    .msg-content {
-      max-width: 72%;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .msg-bubble {
-      padding: 12px 16px;
-      font-size: 14px;
-      line-height: 1.6;
-    }
-
-    .msg-bubble.bot {
-      background: rgba(0,212,170,0.06);
-      border: 1px solid rgba(0,212,170,0.12);
-      color: #c8d8e8;
-      border-radius: 4px 18px 18px 18px;
-    }
-
-    .msg-bubble.user {
-      background: linear-gradient(135deg, rgba(0,212,170,0.2), rgba(0,153,255,0.2));
-      border: 1px solid rgba(0,212,170,0.25);
-      color: #e8f4f8;
-      border-radius: 18px 4px 18px 18px;
-    }
-
-    .msg-time { font-size: 10px; color: #334455; padding: 0 4px; }
-    .message-row.user .msg-time { text-align: right; }
-
-    .typing-bubble {
-      background: rgba(0,212,170,0.06);
-      border: 1px solid rgba(0,212,170,0.12);
-      border-radius: 4px 18px 18px 18px;
-      padding: 14px 18px;
-      display: flex;
-      gap: 5px;
-      align-items: center;
-      width: fit-content;
-    }
-
-    .typing-dot {
-      width: 6px; height: 6px;
-      background: #00d4aa;
-      border-radius: 50%;
-      animation: typingBounce 1.2s infinite;
-    }
-
-    @keyframes typingBounce {
-      0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
-      30% { transform: translateY(-6px); opacity: 1; }
-    }
-
-    .quick-replies {
-      padding: 0 24px 16px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .quick-btn {
-      background: rgba(0,212,170,0.05);
-      border: 1px solid rgba(0,212,170,0.2);
-      border-radius: 20px;
-      color: #00d4aa;
-      padding: 6px 14px;
-      font-size: 12px;
-      font-family: 'DM Sans', sans-serif;
-      cursor: pointer;
-      transition: all 0.2s;
-      font-weight: 500;
-    }
-
-    .quick-btn:hover {
-      background: rgba(0,212,170,0.15);
-      border-color: rgba(0,212,170,0.5);
-      transform: translateY(-1px);
-    }
-
-    .input-area {
-      padding: 16px 24px 20px;
-      border-top: 1px solid rgba(0,212,170,0.08);
-      position: relative;
-    }
-
-    .input-area::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 24px; right: 24px;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(0,212,170,0.2), transparent);
-    }
-
-    .input-row { display: flex; gap: 10px; align-items: flex-end; }
-    .input-wrapper { flex: 1; position: relative; }
-
-    .chat-input {
-      width: 100%;
-      background: rgba(255,255,255,0.04);
-      border: 1px solid rgba(0,212,170,0.15);
-      border-radius: 14px;
-      padding: 13px 18px;
-      color: #e0e8f0;
-      font-size: 14px;
-      font-family: 'DM Sans', sans-serif;
-      outline: none;
-      transition: all 0.2s;
-    }
-
-    .chat-input:focus {
-      border-color: rgba(0,212,170,0.4);
-      background: rgba(0,212,170,0.04);
-      box-shadow: 0 0 0 3px rgba(0,212,170,0.05);
-    }
-
-    .chat-input::placeholder { color: #334455; }
-
-    .send-btn {
-      width: 48px; height: 48px;
-      background: linear-gradient(135deg, #00d4aa, #0099ff);
-      border: none;
-      border-radius: 14px;
-      color: #050810;
-      cursor: pointer;
-      font-size: 18px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.2s;
-      flex-shrink: 0;
-      box-shadow: 0 4px 15px rgba(0,212,170,0.3);
-    }
-
-    .send-btn:hover:not(:disabled) {
-      transform: translateY(-1px);
-      box-shadow: 0 6px 20px rgba(0,212,170,0.4);
-    }
-
-    .send-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
-
-    .input-hint { font-size: 11px; color: #223344; margin-top: 8px; text-align: center; }
-
-    .stats-bar {
-      display: flex;
-      justify-content: center;
-      gap: 32px;
-      margin-top: 16px;
-      padding: 12px 24px;
-      background: rgba(0,212,170,0.03);
-      border: 1px solid rgba(0,212,170,0.08);
-      border-radius: 14px;
-    }
-
-    .stat-item { text-align: center; }
-
-    .stat-value {
-      font-family: 'Syne', sans-serif;
+    .hero-tag {
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: #e9fff3;
+      border: 1px solid #c9efdb;
+      color: #0a7f46;
+      font-size: 11px;
       font-weight: 700;
-      font-size: 18px;
-      color: #00d4aa;
-    }
-
-    .stat-label {
-      font-size: 10px;
-      color: #445566;
-      margin-top: 2px;
+      letter-spacing: 0.4px;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
     }
+    .demo-logo { width: min(560px, 90vw); height: auto; display: block; position: relative; z-index: 1; filter: drop-shadow(0 8px 20px rgba(0,166,81,0.12)); }
+    .demo-title { color: #0a3b23; font-size: clamp(24px, 4vw, 36px); text-align: center; font-weight: 800; letter-spacing: -0.6px; line-height: 1.2; max-width: 820px; }
+    .demo-sub { color: #0b5f35; font-size: 15px; text-align: center; position: relative; z-index: 1; font-weight: 600; letter-spacing: 0.1px; }
+    .demo-shield { width: 74px; height: 74px; border-radius: 20px; margin-bottom: 6px; position: relative; z-index: 1; animation: shieldFloat 3s ease-in-out infinite; background: linear-gradient(135deg, #e9fff3, #d4f8e4); display: flex; align-items: center; justify-content: center; border: 1px solid #b5ebcb; overflow: hidden; }
+    .demo-shield img { width: 100%; height: 100%; object-fit: cover; }
+    @keyframes shieldFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+    .demo-cards { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-top: 14px; position: relative; z-index: 1; }
+    .demo-card { background: #ffffff; border: 1px solid #d8f2e3; border-radius: 999px; padding: 10px 16px; text-align: center; color: #0f5534; box-shadow: 0 8px 24px rgba(0, 166, 81, 0.08); display: inline-flex; align-items: center; gap: 8px; }
+    .demo-card-icon { font-size: 18px; margin-bottom: 0; }
+    .demo-card-label { font-size: 12px; opacity: 0.9; font-weight: 700; }
+    .hero-stats { width: min(760px, 100%); margin-top: 8px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+    .hero-stat { background: #ffffff; border: 1px solid #d7efdf; border-radius: 14px; text-align: center; padding: 12px 10px; box-shadow: 0 8px 20px rgba(0, 120, 62, 0.07); }
+    .hero-stat-value { font-size: 18px; font-weight: 800; color: #06783e; }
+    .hero-stat-label { margin-top: 2px; font-size: 11px; color: #5f7f6f; font-weight: 600; }
+    .demo-hint { color: #4b8f66; font-size: 13px; margin-top: 12px; text-align: center; animation: hb 1.5s infinite; position: relative; z-index: 1; font-weight: 600; }
+    @keyframes hb { 0%,100%{transform:translateY(0)} 50%{transform:translateY(5px)} }
+
+    .chat-bubble {
+      position: fixed; bottom: 95px; right: 24px;
+      background: transparent; border: none;
+      box-shadow: none; cursor: pointer; z-index: 999;
+      display: flex; align-items: center; justify-content: center;
+      animation: bIn 0.4s ease, bFloat 3s ease-in-out infinite;
+      isolation: isolate;
+      padding: 0;
+    }
+    .chat-bubble .demo-shield {
+      width: 64px; height: 64px; margin: 0;
+      position: relative;
+      z-index: 2;
+      box-shadow: 0 12px 28px rgba(0, 97, 49, 0.28);
+    }
+    .chat-bubble-note {
+      position: absolute;
+      top: -8px;
+      right: 24px;
+      background: #00a651;
+      color: #fff;
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 11px;
+      font-weight: 700;
+      border: 2px solid #fff;
+      box-shadow: 0 6px 14px rgba(0, 166, 81, 0.35);
+      line-height: 1;
+      white-space: nowrap;
+      z-index: 3;
+      pointer-events: none;
+    }
+    @keyframes bIn { from{opacity:0;transform:scale(0.8) translateY(10px)} to{opacity:1;transform:scale(1) translateY(0)} }
+    @keyframes bFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
+
+    .chat-win {
+      position: fixed; bottom: 95px; right: 24px;
+      width: 390px; height: 600px;
+      background: #fff; border-radius: 22px; overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.18), 0 0 0 1px rgba(0,0,0,0.05);
+      z-index: 1000; display: flex; flex-direction: column;
+      animation: wIn 0.35s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    @keyframes wIn { from{opacity:0;transform:translateY(20px) scale(0.94)} to{opacity:1;transform:translateY(0) scale(1)} }
+
+    @media(max-width:480px) {
+      .hero-panel { border-radius: 22px; padding: 24px 14px 20px; }
+      .hero-stats { grid-template-columns: 1fr; }
+      .chat-win { width: calc(100vw - 16px); height: calc(100vh - 100px); right: 8px; bottom: 82px; border-radius: 18px; }
+      .chat-bubble { right: 12px; }
+      .chat-bubble-note { font-size: 10px; padding: 5px 8px; right: 20px; }
+    }
+
+    .head { background: linear-gradient(135deg, #00a651, #007a3d); padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+    .hl { display: flex; align-items: center; gap: 11px; }
+    .hav { width: 42px; height: 42px; background: rgba(255,255,255,0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; position: relative; border: 2px solid rgba(255,255,255,0.3); color: #d6ffe8; overflow: hidden; }
+    .chatbot-icon { width: 100%; height: 100%; object-fit: cover; }
+    .hav::after { content: ''; position: absolute; bottom: -2px; right: -2px; width: 10px; height: 10px; background: #a8ffce; border-radius: 50%; border: 2px solid #007a3d; }
+    .hname { font-weight: 800; font-size: 15px; color: #fff; }
+    .hstat { font-size: 11px; color: rgba(255,255,255,0.8); margin-top: 1px; display: flex; align-items: center; gap: 4px; }
+    .sp { width: 6px; height: 6px; background: #a8ffce; border-radius: 50%; animation: sp 2s infinite; }
+    @keyframes sp { 0%,100%{opacity:1} 50%{opacity:0.4} }
+    .hbtn { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: #fff; padding: 5px 10px; cursor: pointer; font-size: 11px; font-weight: 600; font-family: inherit; transition: all 0.2s; }
+    .hbtn:hover { background: rgba(255,255,255,0.25); }
+
+    .msgs { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 12px; background: #f8fafb; }
+    .msgs::-webkit-scrollbar { width: 3px; }
+    .msgs::-webkit-scrollbar-thumb { background: #ddd; border-radius: 3px; }
+    .mr { display: flex; gap: 8px; animation: ms 0.25s ease; }
+    .mr.user { flex-direction: row-reverse; }
+    @keyframes ms { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+    .mav { width: 30px; height: 30px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; margin-top: 2px; }
+    .mav.bot { background: #e8fff2; border: 1px solid #bce9cf; overflow: hidden; }
+    .mav.usr { background: #e8f4ff; border: 1px solid #c0d8f0; }
+    .mb2 { max-width: 76%; display: flex; flex-direction: column; gap: 3px; }
+    .bub { padding: 10px 13px; font-size: 13.5px; line-height: 1.55; white-space: pre-wrap; }
+    .bub.bot { background: #fff; color: #1a1a2e; border-radius: 4px 16px 16px 16px; border: 1px solid #e8edf2; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+    .bub.usr { background: linear-gradient(135deg,#00a651,#007a3d); color: #fff; border-radius: 16px 4px 16px 16px; }
+    .mt { font-size: 10px; color: #aaa; padding: 0 3px; }
+    .mr.user .mt { text-align: right; }
+    .tb { background: #fff; border: 1px solid #e8edf2; border-radius: 4px 16px 16px 16px; padding: 12px 16px; display: flex; gap: 4px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+    .td { width: 7px; height: 7px; background: #00a651; border-radius: 50%; animation: td 1.2s infinite; }
+    @keyframes td { 0%,60%,100%{transform:translateY(0);opacity:0.4} 30%{transform:translateY(-6px);opacity:1} }
+
+    .qr { padding: 8px 16px 10px; display: flex; flex-wrap: wrap; gap: 6px; flex-shrink: 0; background: #f8fafb; border-top: 1px solid #f0f0f0; }
+    .qb { background: #fff; border: 1.5px solid #00a651; border-radius: 20px; color: #00a651; padding: 5px 12px; font-size: 11.5px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all 0.2s; }
+    .qb:hover { background: #00a651; color: #fff; transform: translateY(-1px); }
+
+    .lfw { flex-shrink: 0; border-top: 2px solid #00a651; max-height: 340px; overflow-y: auto; background: linear-gradient(180deg,#f0fff6,#fff); }
+
+    .ia { padding: 10px 14px 13px; border-top: 1px solid #eee; flex-shrink: 0; background: #fff; }
+    .ir { display: flex; gap: 8px; align-items: center; }
+    .inp { flex: 1; padding: 10px 14px; border: 1.5px solid #e0e0e0; border-radius: 12px; font-size: 13px; font-family: inherit; outline: none; transition: border-color 0.2s; color: #1a1a2e; }
+    .inp:focus { border-color: #00a651; }
+    .inp::placeholder { color: #bbb; }
+    .snd { width: 40px; height: 40px; background: linear-gradient(135deg,#00a651,#007a3d); border: none; border-radius: 12px; color: #fff; cursor: pointer; font-size: 17px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; flex-shrink: 0; box-shadow: 0 3px 10px rgba(0,166,81,0.35); }
+    .snd:hover:not(:disabled) { transform: translateY(-1px); }
+    .snd:disabled { opacity: 0.4; cursor: not-allowed; }
+    .pw { text-align: center; font-size: 10px; color: #ccc; margin-top: 6px; }
   `;
 
   return (
     <>
       <style>{css}</style>
-      <div className="chatbot-root">
-        <div className="bg-grid" />
-        <div className="bg-glow-1" />
-        <div className="bg-glow-2" />
 
-        {particles.map((p) => (
-          <div key={p.id} className="particle" style={{
-            left: `${p.x}%`,
-            width: `${p.size}px`,
-            height: `${p.size}px`,
-            animationDuration: `${p.duration}s`,
-            animationDelay: `${p.delay}s`,
-          }} />
-        ))}
-
-        <div className="main-wrapper">
-          <div className="brand-bar">
-            <div className="brand-logo">
-              {config.businessName.slice(0, -4)}
-              <span>{config.businessName.slice(-4)}</span>
+      {/* Demo page */}
+      <div className="demo-bg">
+        <div className="hero-panel">
+          <div className="hero-tag">Trusted UAE Insurance Marketplace</div>
+          <div className="demo-shield"><img src={chatbotIcon} alt="Chatbot" /></div>
+          <img src={tameenLogo} alt="Tameen24 logo" className="demo-logo" />
+          <div className="demo-title">Compare plans, get expert guidance, and secure your policy with confidence.</div>
+          <div className="demo-sub">Your Trusted Insurance Partner in UAE</div>
+          <div className="demo-cards">
+            {[ ["🚗","Car"],["🏥","Medical"],["🏠","Property"],["⛵","Marine"],["🔥","Fire"],["👨‍👩‍👧‍👦","Life"]].map(([i,l]) => (
+              <div key={l} className="demo-card">
+                <div className="demo-card-icon">{i}</div>
+                <div className="demo-card-label">{l}</div>
+              </div>
+            ))}
+          </div>
+          <div className="hero-stats">
+            <div className="hero-stat">
+              <div className="hero-stat-value">24/7</div>
+              <div className="hero-stat-label">AI Assistant</div>
             </div>
-            <div className="brand-badge">
-              <div className="badge-dot" />
-              AI Assistant Online
+            <div className="hero-stat">
+              <div className="hero-stat-value">1 hr</div>
+              <div className="hero-stat-label">Agent Callback</div>
+            </div>
+            <div className="hero-stat">
+              <div className="hero-stat-value">All UAE</div>
+              <div className="hero-stat-label">Coverage Support</div>
+            </div>
+          </div>
+          <div className="demo-hint">Try our AI assistant. Click the green button below.</div>
+        </div>
+      </div>
+
+      {/* Bubble */}
+      {!isOpen && (
+        <div className="chat-bubble" onClick={toggleChat} title={t.bubbleMsg} aria-label={t.bubbleMsg}>
+          <div className="demo-shield"><img src={chatbotIcon} alt="Chatbot" /></div>
+          <div className="chat-bubble-note">Hi! Need a quote?</div>
+        </div>
+      )}
+
+      {/* Chat window */}
+      {isOpen && (
+        <div className="chat-win" style={{ direction: t.dir }}>
+          <div className="head">
+            <div className="hl">
+              <div className="hav"><img src={chatbotIcon} alt="Chatbot" className="chatbot-icon" /></div>
+              <div>
+                <div className="hname">Tameen24 AI</div>
+                <div className="hstat">
+                  <div className="sp" />
+                  {isTyping ? t.typing : t.onlineStatus}
+                </div>
+              </div>
+            </div>
+            <div style={{ display: "flex", gap: "6px" }}>
+              <button className="hbtn" onClick={switchLang}>{t.langBtn}</button>
+              <button className="hbtn" onClick={() => setIsOpen(false)}>✕</button>
             </div>
           </div>
 
-          <div className="chat-window">
-            <div className="chat-header">
-              <div className="agent-info">
-                <div className="agent-avatar">{config.avatarEmoji}</div>
-                <div>
-                  <div className="agent-name">{config.businessName} AI</div>
-                  <div className="agent-status">
-                    <div className="badge-dot" style={{ width: "7px", height: "7px" }} />
-                    {isTyping ? "Typing..." : "Online · Replies instantly"}
-                  </div>
+          <div className="msgs">
+            {messages.map((msg, i) => (
+              <div key={i} className={`mr ${msg.role === "user" ? "user" : ""}`}>
+                <div className={`mav ${msg.role === "user" ? "usr" : "bot"}`}>
+                  {msg.role === "user" ? "👤" : <img src={chatbotIcon} alt="Bot" className="chatbot-icon" />}
+                </div>
+                <div className="mb2">
+                  <div className={`bub ${msg.role === "user" ? "usr" : "bot"}`}>{msg.content}</div>
+                  <div className="mt">{msg.time}</div>
                 </div>
               </div>
-              <div className="header-actions">
-                <button className="btn-icon" onClick={() => setShowConfig(!showConfig)}>
-                  ⚙️ Customize
-                </button>
-                <button className="btn-icon" onClick={clearChat}>🗑️</button>
-              </div>
-            </div>
-
-            {showConfig && (
-              <div className="config-panel">
-                <div className="config-title">⚙ CUSTOMIZE FOR YOUR CLIENT</div>
-                <div className="config-grid">
-                  <div className="config-field">
-                    <label>Business Name</label>
-                    <input className="config-input" value={config.businessName}
-                      onChange={(e) => setConfig({ ...config, businessName: e.target.value })} />
-                  </div>
-                  <div className="config-field">
-                    <label>Avatar Emoji</label>
-                    <input className="config-input" value={config.avatarEmoji}
-                      onChange={(e) => setConfig({ ...config, avatarEmoji: e.target.value })} />
-                  </div>
-                </div>
-                <div className="config-field" style={{ marginBottom: "12px" }}>
-                  <label>Welcome Message</label>
-                  <input className="config-input" value={config.welcomeMessage}
-                    onChange={(e) => setConfig({ ...config, welcomeMessage: e.target.value })} />
-                </div>
-                <div className="config-field">
-                  <label>System Prompt (Business Knowledge)</label>
-                  <textarea className="config-textarea" rows={6} value={config.systemPrompt}
-                    onChange={(e) => setConfig({ ...config, systemPrompt: e.target.value })} />
-                </div>
-                <div className="config-hint">
-                  💡 Replace business info with your client's details. Takes 15 minutes per order.
+            ))}
+            {isTyping && (
+              <div className="mr">
+                <div className="mav bot"><img src={chatbotIcon} alt="Bot" className="chatbot-icon" /></div>
+                <div className="tb">
+                  {[0,1,2].map(i => <div key={i} className="td" style={{ animationDelay: `${i*0.2}s` }} />)}
                 </div>
               </div>
             )}
+            <div ref={bottomRef} />
+          </div>
 
-            <div className="messages-area">
-              {messages.map((msg, i) => (
-                <div key={i} className={`message-row ${msg.role === "user" ? "user" : ""}`}>
-                  <div className={`msg-avatar ${msg.role === "user" ? "user-av" : "bot"}`}>
-                    {msg.role === "user" ? "👤" : config.avatarEmoji}
-                  </div>
-                  <div className="msg-content">
-                    <div className={`msg-bubble ${msg.role === "user" ? "user" : "bot"}`}>
-                      {msg.content}
-                    </div>
-                    <div className="msg-time">{msg.time}</div>
-                  </div>
-                </div>
-              ))}
+          <div className="qr">
+            {t.quickReplies.map((q, i) => (
+              <button key={i} className="qb" onClick={() => sendMessage(q.text)}>{q.label}</button>
+            ))}
+          </div>
 
-              {isTyping && (
-                <div className="message-row">
-                  <div className="msg-avatar bot">{config.avatarEmoji}</div>
-                  <div className="typing-bubble">
-                    {[0, 1, 2].map((i) => (
-                      <div key={i} className="typing-dot" style={{ animationDelay: `${i * 0.2}s` }} />
-                    ))}
-                  </div>
-                </div>
-              )}
-              <div ref={bottomRef} />
+          {showLeadForm && (
+            <div className="lfw">
+              <LeadForm lang={lang} onClose={() => setShowLeadForm(false)} />
             </div>
+          )}
 
-            <div className="quick-replies">
-              {QUICK_REPLIES.map((q, i) => (
-                <button key={i} className="quick-btn" onClick={() => sendMessage(q.text)}>
-                  {q.label}
-                </button>
-              ))}
-            </div>
-
-            <div className="input-area">
-              <div className="input-row">
-                <div className="input-wrapper">
-                  <input
-                    ref={inputRef}
-                    className="chat-input"
-                    value={input}
-                    onChange={(e) => setInput(e.target.value)}
-                    onKeyDown={handleKey}
-                    placeholder="Ask me anything about our services..."
-                    disabled={loading}
-                  />
-                </div>
-                <button className="send-btn" onClick={() => sendMessage()} disabled={loading || !input.trim()}>
+          {!showLeadForm && (
+            <div className="ia">
+              <div className="ir">
+                <input ref={inputRef} className="inp" value={input}
+                  onChange={e => setInput(e.target.value)} onKeyDown={handleKey}
+                  placeholder={t.placeholder} disabled={loading} dir={t.dir} />
+                <button className="snd" onClick={() => sendMessage()} disabled={loading || !input.trim()}>
                   {loading ? "⏳" : "↑"}
                 </button>
               </div>
-              <div className="input-hint">Powered by Claude AI · Press Enter to send</div>
+              <div className="pw">{t.poweredBy}</div>
             </div>
-          </div>
-
-          <div className="stats-bar">
-            <div className="stat-item">
-              <div className="stat-value">24/7</div>
-              <div className="stat-label">Always Online</div>
-            </div>
-            <div className="stat-item">
-              <div className="stat-value">&lt;1s</div>
-              <div className="stat-label">Response Time</div>
-            </div>
-            <div className="stat-item">
-              <div className="stat-value">∞</div>
-              <div className="stat-label">Conversations</div>
-            </div>
-            <div className="stat-item">
-              <div className="stat-value">100%</div>
-              <div className="stat-label">AI Powered</div>
-            </div>
-          </div>
+          )}
         </div>
-      </div>
+      )}
     </>
   );
 }
