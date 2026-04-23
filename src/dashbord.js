@@ -1,16 +1,13 @@
 import { useState, useEffect } from "react";
 
-const LEADS_URL = window.location.hostname === "localhost"
-  ? "http://localhost:3001/api/leads"
-  : "https://my-chatbot-production-7d09.up.railway.app/api/leads";
+const DEFAULT_RAILWAY_BASE_URL = "https://my-chatbot-production-7d09.up.railway.app";
+const LOCAL_BASE_URL = process.env.REACT_APP_LOCAL_API_BASE_URL || "http://localhost:3001";
+const PROD_BASE_URL = process.env.REACT_APP_API_BASE_URL || DEFAULT_RAILWAY_BASE_URL;
+const API_BASE_URL = (window.location.hostname === "localhost" ? LOCAL_BASE_URL : PROD_BASE_URL).replace(/\/$/, "");
 
-const ADMIN_LOGIN_URL = window.location.hostname === "localhost"
-  ? "http://localhost:3001/api/admin/login"
-  : "https://my-chatbot-production-7d09.up.railway.app/api/admin/login";
-
-const ADMIN_VERIFY_URL = window.location.hostname === "localhost"
-  ? "http://localhost:3001/api/admin/verify"
-  : "https://my-chatbot-production-7d09.up.railway.app/api/admin/verify";
+const LEADS_URL = `${API_BASE_URL}/api/leads`;
+const ADMIN_LOGIN_URL = `${API_BASE_URL}/api/admin/login`;
+const ADMIN_VERIFY_URL = `${API_BASE_URL}/api/admin/verify`;
 
 const ADMIN_TOKEN_KEY = "tameen24_admin_token";
 
