@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 const DEFAULT_RAILWAY_BASE_URL = "https://my-chatbot-production-7d09.up.railway.app";
 const API_BASE_URL = (process.env.REACT_APP_API_BASE_URL || DEFAULT_RAILWAY_BASE_URL).replace(/\/$/, "");
@@ -27,11 +27,41 @@ export default function AdminDashboard() {
   const [dateFilter, setDateFilter] = useState("all");
   const [sortOrder, setSortOrder] = useState("newest");
 
-  useEffect(() => {
-    verifyAdminSession();
+  const fetchLeads = useCallback(async (passedToken) => {
+    try {
+      const token = passedToken || getStoredAdminToken();
+      if (!token) {
+        setError("Unauthorized");
+        return;
+      }
+
+      const res = await fetch(LEADS_URL, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const data = await res.json();
+      if (res.status === 401) {
+        localStorage.removeItem(ADMIN_TOKEN_KEY);
+        setIsAuthorized(false);
+        setError("");
+        setLoginError("Unauthorized. Please login again.");
+        return;
+      }
+
+      if (data.leads) {
+        setLeads(data.leads);
+        setError("");
+      } else {
+        setError("Failed to load leads");
+      }
+    } catch {
+      setError("Connection error");
+    }
+    setLoading(false);
   }, []);
 
-  async function verifyAdminSession() {
+  const verifyAdminSession = useCallback(async () => {
     const token = getStoredAdminToken();
     if (!token) {
       setAuthLoading(false);
@@ -60,7 +90,11 @@ export default function AdminDashboard() {
       setAuthLoading(false);
       setLoading(false);
     }
-  }
+  }, [fetchLeads]);
+
+  useEffect(() => {
+    verifyAdminSession();
+  }, [verifyAdminSession]);
 
   async function handleAdminLogin(e) {
     e.preventDefault();
@@ -102,40 +136,6 @@ export default function AdminDashboard() {
     setIsAuthorized(false);
     setLeads([]);
     setError("");
-  }
-
-  async function fetchLeads(passedToken) {
-    try {
-      const token = passedToken || getStoredAdminToken();
-      if (!token) {
-        setError("Unauthorized");
-        return;
-      }
-
-      const res = await fetch(LEADS_URL, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const data = await res.json();
-      if (res.status === 401) {
-        localStorage.removeItem(ADMIN_TOKEN_KEY);
-        setIsAuthorized(false);
-        setError("");
-        setLoginError("Unauthorized. Please login again.");
-        return;
-      }
-
-      if (data.leads) {
-        setLeads(data.leads);
-        setError("");
-      } else {
-        setError("Failed to load leads");
-      }
-    } catch {
-      setError("Connection error");
-    }
-    setLoading(false);
   }
 
   const insuranceTypes = ["All", ...new Set(leads.map(l => l.insurance).filter(Boolean))];
@@ -328,7 +328,8 @@ export default function AdminDashboard() {
     .search { flex: 1; min-width: 200px; padding: 10px 14px; border: 1.5px solid #ddd; border-radius: 10px; font-size: 13px; font-family: inherit; outline: none; }
     .search:focus { border-color: #00a651; }
     .filt { padding: 10px 14px; border: 1.5px solid #ddd; border-radius: 10px; font-size: 13px; font-family: inherit; outline: none; background: #fff; cursor: pointer; }
-    .ref { padding: 10px 16px; background: #00a651; color: #fff; border: none; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; }
+    .ref { padding: 10px 16px; background: #00a651; color: #fff; border: none; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; display: inline-flex; align-items: center; gap: 8px; }
+    .ref-ico { width: 14px; height: 14px; display: inline-block; }
     .exp { padding: 10px 14px; background: #fff; color: #00a651; border: 1.5px solid #00a651; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; }
     .exp:hover { background: #eafff2; }
     .charts { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 18px; }
@@ -363,7 +364,20 @@ export default function AdminDashboard() {
     .empty { text-align: center; padding: 40px; color: #aaa; font-size: 14px; }
     .loading { text-align: center; padding: 40px; color: #00a651; font-size: 14px; }
     @media(max-width:900px) { .charts { grid-template-columns: 1fr; } }
-    @media(max-width:600px) { .tbl th:nth-child(6), .tbl td:nth-child(6) { display: none; } }
+    @media(max-width:700px) {
+      .wrap { padding: 20px 12px; }
+      .logo { font-size: 19px; }
+      .controls { gap: 8px; }
+      .search, .filt, .exp, .ref { width: 100%; }
+      .table-wrap { background: transparent; border: none; overflow: visible; }
+      .tbl { border-collapse: separate; border-spacing: 0 10px; }
+      .tbl thead { display: none; }
+      .tbl tr { display: block; background: #fff; border: 1px solid #e8f0e8; border-radius: 12px; box-shadow: 0 8px 20px rgba(0,0,0,0.05); overflow: hidden; }
+      .tbl td { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 12px; border-bottom: 1px solid #f3f3f3; font-size: 12px; }
+      .tbl td::before { content: attr(data-label); color: #5f6f62; font-size: 11px; font-weight: 700; letter-spacing: 0.2px; text-transform: uppercase; }
+      .tbl td:last-child { border-bottom: none; }
+      .tbl td .wa-link, .tbl td .email-link { margin-left: auto; }
+    }
   `;
 
   const todayLeads = leads.filter(l => {
@@ -464,7 +478,13 @@ export default function AdminDashboard() {
           </select>
           <button className="exp" onClick={exportCsv}>Export CSV</button>
           <button className="exp" onClick={exportExcel}>Export Excel</button>
-          <button className="ref" onClick={() => fetchLeads()}>🔄 Refresh</button>
+          <button className="ref" onClick={() => fetchLeads()}>
+            <svg className="ref-ico" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M20 4V10H14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M20 10C18.9 6.8 15.9 4.5 12.4 4.5C8 4.5 4.5 8 4.5 12.4C4.5 16.8 8 20.3 12.4 20.3C15.8 20.3 18.7 18.1 19.9 15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+            Refresh
+          </button>
         </div>
 
         <div className="charts">
@@ -496,7 +516,6 @@ export default function AdminDashboard() {
                     style={{ height: `${Math.max(8, (day.count / maxDaily) * 100)}px` }}
                     title={`${day.label}: ${day.count}`}
                   />
-                  <div className="day-label">{day.label}</div>
                 </div>
               ))}
             </div>
@@ -532,10 +551,10 @@ export default function AdminDashboard() {
 
                   return (
                     <tr key={lead.id}>
-                      <td style={{ color: "#aaa", fontSize: "12px" }}>{i + 1}</td>
-                      <td style={{ fontWeight: "700" }}>{lead.name}</td>
-                      <td style={{ color: "#00a651", fontWeight: "600" }}>{lead.phone}</td>
-                      <td>
+                      <td data-label="#" style={{ color: "#aaa", fontSize: "12px" }}>{i + 1}</td>
+                      <td data-label="Name" style={{ fontWeight: "700" }}>{lead.name}</td>
+                      <td data-label="Phone" style={{ color: "#00a651", fontWeight: "600" }}>{lead.phone}</td>
+                      <td data-label="WhatsApp">
                         {waLink ? (
                           <a
                             className="wa-link"
@@ -551,7 +570,7 @@ export default function AdminDashboard() {
                           <span className="wa-disabled">N/A</span>
                         )}
                       </td>
-                      <td>
+                      <td data-label="Email Action">
                         {emailLink ? (
                           <a
                             className="email-link"
@@ -565,10 +584,10 @@ export default function AdminDashboard() {
                           <span className="wa-disabled">N/A</span>
                         )}
                       </td>
-                      <td style={{ color: "#666" }}>{lead.email || "—"}</td>
-                      <td><span className="ins-badge">{lead.insurance}</span></td>
-                      <td><span className={`lang-badge ${lead.lang === "ar" ? "lang-ar" : "lang-en"}`}>{lead.lang === "ar" ? "AR" : "EN"}</span></td>
-                      <td style={{ color: "#aaa", fontSize: "12px" }}>{lead.timestamp ? new Date(lead.timestamp).toLocaleString() : "—"}</td>
+                      <td data-label="Email" style={{ color: "#666" }}>{lead.email || "—"}</td>
+                      <td data-label="Insurance"><span className="ins-badge">{lead.insurance}</span></td>
+                      <td data-label="Lang"><span className={`lang-badge ${lead.lang === "ar" ? "lang-ar" : "lang-en"}`}>{lead.lang === "ar" ? "AR" : "EN"}</span></td>
+                      <td data-label="Time" style={{ color: "#aaa", fontSize: "12px" }}>{lead.timestamp ? new Date(lead.timestamp).toLocaleString() : "—"}</td>
                     </tr>
                   );
                 })}

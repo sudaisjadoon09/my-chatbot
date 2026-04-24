@@ -7,6 +7,7 @@ const API_BASE_URL = (process.env.REACT_APP_API_BASE_URL || DEFAULT_RAILWAY_BASE
 
 const API_URL = `${API_BASE_URL}/api/chat`;
 const LEADS_URL = `${API_BASE_URL}/api/lead`;
+const LEAD_SUBMIT_TIMEOUT_MS = 8000;
 
 const T = {
   en: {
@@ -30,6 +31,7 @@ const T = {
     emailLabel: "Email Address", insuranceLabel: "Insurance Type",
     submitBtn: "Get Free Quote →",
     thankYou: "✅ Thank you! Our agent will call you within 1 hour.",
+    submitSuccessShort: "Quote request submitted successfully.",
     namePh: "Enter your full name", phonePh: "+971 XX XXX XXXX", emailPh: "your@email.com",
     insuranceTypes: ["Car Insurance","Medical Insurance","Property Insurance","Marine Insurance","Fire Insurance","Life Insurance","Other"],
     welcome: "Welcome to Tameen24! 🛡️\n\nI'm your AI insurance assistant. I can help you with:\n• Car & Motor Insurance\n• Medical & Health Insurance\n• Property Insurance\n• Claims & Renewals\n\nHow can I help you today?",
@@ -56,6 +58,7 @@ const T = {
     emailLabel: "البريد الإلكتروني", insuranceLabel: "نوع التأمين",
     submitBtn: "احصل على عرض مجاني ←",
     thankYou: "✅ شكراً! سيتصل بك وكيلنا خلال ساعة واحدة.",
+    submitSuccessShort: "تم إرسال طلب عرض السعر بنجاح.",
     namePh: "أدخل اسمك الكامل", phonePh: "٩٧١ XX XXX XXXX+", emailPh: "بريدك@email.com",
     insuranceTypes: ["تأمين السيارة","التأمين الطبي","تأمين الممتلكات","التأمين البحري","تأمين الحريق","التأمين على الحياة","أخرى"],
     welcome: "مرحباً بك في تأمين24! 🛡️\n\nأنا مساعدك الذكي للتأمين. يمكنني مساعدتك في:\n• تأمين السيارات\n• التأمين الطبي والصحي\n• تأمين الممتلكات\n• المطالبات والتجديد\n\nكيف يمكنني مساعدتك اليوم؟",
@@ -79,26 +82,70 @@ function LeadForm({ lang, onClose }) {
   const [form, setForm] = useState({ name: "", phone: "", email: "", insurance: t.insuranceTypes[0] });
   const [submitted, setSubmitted] = useState(false);
   const [saving, setSaving] = useState(false);
+  const closeTimerRef = useRef(null);
+
+  useEffect(() => {
+    return () => {
+      if (closeTimerRef.current) {
+        clearTimeout(closeTimerRef.current);
+      }
+    };
+  }, []);
 
   async function handleSubmit() {
     if (!form.name || !form.phone) return;
     setSaving(true);
+    const controller = new AbortController();
+    let timedOut = false;
+    const timeoutId = setTimeout(() => {
+      timedOut = true;
+      controller.abort();
+    }, LEAD_SUBMIT_TIMEOUT_MS);
+
     try {
-      await fetch(LEADS_URL, {
+      const res = await fetch(LEADS_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        signal: controller.signal,
         body: JSON.stringify({ ...form, lang, timestamp: new Date().toISOString() }),
       });
-    } catch (e) { console.error(e); }
+      if (!res.ok) throw new Error(`Lead submit failed: ${res.status}`);
+    } catch (e) {
+      // If request timed out, assume backend may still have saved the lead and continue to success UI.
+      if (!timedOut) {
+        console.error(e);
+      }
+    } finally {
+      clearTimeout(timeoutId);
+    }
+
     setSaving(false);
     setSubmitted(true);
-    setTimeout(onClose, 3000);
+    closeTimerRef.current = setTimeout(onClose, 4000);
   }
 
   if (submitted) return (
     <div style={{ padding: "24px", textAlign: "center" }}>
-      <div style={{ fontSize: "40px", marginBottom: "10px" }}>✅</div>
-      <div style={{ color: "#00a651", fontWeight: "700", fontSize: "14px" }}>{t.thankYou}</div>
+      <div
+        style={{
+          width: "64px",
+          height: "64px",
+          margin: "0 auto 10px",
+          borderRadius: "50%",
+          border: "2px solid #00a651",
+          color: "#00a651",
+          fontWeight: "800",
+          fontSize: "30px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          background: "#f3fff8",
+        }}
+      >
+        ✓
+      </div>
+      <div style={{ color: "#00a651", fontWeight: "700", fontSize: "14px", marginBottom: "4px" }}>{t.submitSuccessShort}</div>
+      <div style={{ color: "#5a6d60", fontWeight: "600", fontSize: "12px" }}>{t.thankYou}</div>
     </div>
   );
 
@@ -142,7 +189,7 @@ function LeadForm({ lang, onClose }) {
       </div>
       <button onClick={handleSubmit} disabled={saving || !form.name || !form.phone}
         style={{ width: "100%", padding: "11px", background: saving ? "#ccc" : "linear-gradient(135deg,#00a651,#007a3d)", color: "#fff", border: "none", borderRadius: "9px", fontSize: "13px", fontWeight: "700", cursor: saving ? "not-allowed" : "pointer", fontFamily: "inherit" }}>
-        {saving ? "..." : t.submitBtn}
+        {saving ? (lang === "en" ? "Submitting..." : "جارٍ الإرسال...") : t.submitBtn}
       </button>
     </div>
   );

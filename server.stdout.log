@@ -1,0 +1,6 @@
+
+> my-chatbot@0.1.0 server
+> node server.js
+
+◇ injected env (18) from .env // tip: ⌁ auth for agents [www.vestauth.com]
+✅ Tameen24 Backend running on port 3001

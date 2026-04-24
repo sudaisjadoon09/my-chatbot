@@ -302,12 +302,20 @@ app.post('/api/lead', async (req, res) => {
     writeLead(lead);
     console.log(`✅ New lead saved: ${name} - ${phone} - ${insurance}`);
 
-    await Promise.allSettled([
+    // Respond immediately so the client can show success without waiting on external services.
+    res.json({ success: true });
+
+    Promise.allSettled([
       sendLeadEmailNotification(lead),
       sendLeadWhatsAppNotification(lead),
-    ]);
-
-    res.json({ success: true });
+    ]).then((results) => {
+      results.forEach((result, index) => {
+        if (result.status === 'rejected') {
+          const channel = index === 0 ? 'email' : 'whatsapp';
+          console.error(`❌ Lead ${channel} notification failed:`, result.reason?.message || result.reason);
+        }
+      });
+    });
   } catch (err) {
     console.error('❌ Lead save error:', err.message);
     res.status(500).json({ error: err.message });
