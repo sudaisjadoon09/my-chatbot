@@ -199,7 +199,7 @@ export default function AdminDashboard() {
     return { label, count };
   });
 
-  const maxInsurance = Math.max(1, ...insuranceChart.map(([, count]) => count));
+  const maxProperty = Math.max(1, ...insuranceChart.map(([, count]) => count));
   const maxDaily = Math.max(1, ...dailyChart.map(day => day.count));
 
   function normalizeExportValue(value) {
@@ -220,7 +220,7 @@ export default function AdminDashboard() {
   }
 
   function exportCsv() {
-    const headers = ["Name", "Phone", "Email", "Insurance", "Language", "Time"];
+    const headers = ["Name", "Phone", "Email", "Property", "Language", "Time"];
     const escapeCsv = (value) => `"${normalizeExportValue(value).replace(/"/g, '""')}"`;
 
     const rows = filtered.map(lead => [
@@ -241,7 +241,7 @@ export default function AdminDashboard() {
   }
 
   function exportExcel() {
-    const headers = ["Name", "Phone", "Email", "Insurance", "Language", "Time"];
+    const headers = ["Name", "Phone", "Email", "Property", "Language", "Time"];
 
     const rows = filtered.map(lead => [
       normalizeExportValue(lead.name),
@@ -293,10 +293,10 @@ export default function AdminDashboard() {
     if (!email) return null;
 
     const leadName = lead?.name || "Customer";
-    const insuranceType = lead?.insurance || "Insurance";
-    const subject = encodeURIComponent(`Tameen24 Quote Follow-up - ${insuranceType}`);
+    const insuranceType = lead?.insurance || "Property";
+    const subject = encodeURIComponent(`EliteEstate Quote Follow-up - ${insuranceType}`);
     const body = encodeURIComponent(
-      `Hi ${leadName},\n\nThank you for your interest in ${insuranceType}. Our team at Tameen24 is ready to assist you with your quote.\n\nBest regards,\nTameen24 Team`
+      `Hi ${leadName},\n\nThank you for your interest in ${insuranceType}. Our team at EliteEstate is ready to assist you with your quote.\n\nBest regards,\nEliteEstate Team`
     );
 
     return `mailto:${email}?subject=${subject}&body=${body}`;
@@ -309,28 +309,28 @@ export default function AdminDashboard() {
     .wrap { max-width: 1100px; margin: 0 auto; padding: 30px 20px; }
     .top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; flex-wrap: wrap; gap: 12px; }
     .logo { font-size: 24px; font-weight: 800; color: #1a1a2e; }
-    .logo span { color: #00a651; }
+    .logo span { color: #004d40; }
     .auth-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px; }
     .auth-card { width: min(420px, 100%); background: #fff; border: 1px solid #e8f0e8; border-radius: 16px; padding: 24px; box-shadow: 0 14px 34px rgba(0,0,0,0.08); }
     .auth-title { font-size: 22px; font-weight: 800; color: #1a1a2e; margin-bottom: 6px; }
     .auth-sub { font-size: 13px; color: #667; margin-bottom: 16px; }
     .auth-input { width: 100%; padding: 11px 13px; border: 1.5px solid #d6dfd6; border-radius: 10px; font-size: 14px; font-family: inherit; margin-bottom: 10px; outline: none; }
-    .auth-input:focus { border-color: #00a651; }
-    .auth-btn { width: 100%; padding: 11px 13px; border: none; border-radius: 10px; background: linear-gradient(135deg, #00a651, #007a3d); color: #fff; font-size: 14px; font-weight: 700; cursor: pointer; font-family: inherit; }
+    .auth-input:focus { border-color: #004d40; }
+    .auth-btn { width: 100%; padding: 11px 13px; border: none; border-radius: 10px; background: linear-gradient(135deg, #004d40, #002d26); color: #fff; font-size: 14px; font-weight: 700; cursor: pointer; font-family: inherit; }
     .auth-err { font-size: 12px; color: #c62828; margin-bottom: 10px; }
     .logout-btn { padding: 10px 14px; border: 1.5px solid #d4d4d4; border-radius: 10px; background: #fff; color: #333; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; }
-    .badge { background: #00a651; color: #fff; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; }
+    .badge { background: #004d40; color: #fff; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; }
     .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; margin-bottom: 24px; }
     .stat { background: #fff; border-radius: 14px; padding: 18px 20px; border: 1px solid #e8f0e8; }
-    .stat-val { font-size: 28px; font-weight: 800; color: #00a651; }
+    .stat-val { font-size: 28px; font-weight: 800; color: #004d40; }
     .stat-lab { font-size: 12px; color: #888; margin-top: 3px; font-weight: 600; }
     .controls { display: flex; gap: 12px; margin-bottom: 18px; flex-wrap: wrap; }
     .search { flex: 1; min-width: 200px; padding: 10px 14px; border: 1.5px solid #ddd; border-radius: 10px; font-size: 13px; font-family: inherit; outline: none; }
-    .search:focus { border-color: #00a651; }
+    .search:focus { border-color: #004d40; }
     .filt { padding: 10px 14px; border: 1.5px solid #ddd; border-radius: 10px; font-size: 13px; font-family: inherit; outline: none; background: #fff; cursor: pointer; }
-    .ref { padding: 10px 16px; background: #00a651; color: #fff; border: none; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; display: inline-flex; align-items: center; gap: 8px; }
+    .ref { padding: 10px 16px; background: #004d40; color: #fff; border: none; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; display: inline-flex; align-items: center; gap: 8px; }
     .ref-ico { width: 14px; height: 14px; display: inline-block; }
-    .exp { padding: 10px 14px; background: #fff; color: #00a651; border: 1.5px solid #00a651; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; }
+    .exp { padding: 10px 14px; background: #fff; color: #004d40; border: 1.5px solid #004d40; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; }
     .exp:hover { background: #eafff2; }
     .charts { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 18px; }
     .chart-card { background: #fff; border-radius: 16px; border: 1px solid #e8f0e8; padding: 16px; }
@@ -338,12 +338,12 @@ export default function AdminDashboard() {
     .bar-row { display: grid; grid-template-columns: 110px 1fr 34px; align-items: center; gap: 10px; margin-bottom: 8px; }
     .bar-label { font-size: 12px; color: #666; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .bar-track { height: 9px; border-radius: 999px; background: #eef6ee; overflow: hidden; }
-    .bar-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, #00a651, #3ac47a); }
-    .bar-value { font-size: 12px; font-weight: 700; color: #00a651; text-align: right; }
+    .bar-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, #004d40, #3ac47a); }
+    .bar-value { font-size: 12px; font-weight: 700; color: #004d40; text-align: right; }
     .day-bars { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; align-items: end; min-height: 130px; }
     .day-col { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 8px; }
-    .day-bar { width: 100%; max-width: 34px; border-radius: 10px 10px 6px 6px; background: linear-gradient(180deg, #00a651, #007b3d); min-height: 8px; }
-    .day-count { font-size: 11px; color: #00a651; font-weight: 700; }
+    .day-bar { width: 100%; max-width: 34px; border-radius: 10px 10px 6px 6px; background: linear-gradient(180deg, #004d40, #007b3d); min-height: 8px; }
+    .day-count { font-size: 11px; color: #004d40; font-weight: 700; }
     .day-label { font-size: 11px; color: #777; }
     .empty-chart { font-size: 12px; color: #999; padding: 8px 0; }
     .table-wrap { background: #fff; border-radius: 16px; border: 1px solid #e8f0e8; overflow: hidden; }
@@ -355,14 +355,14 @@ export default function AdminDashboard() {
     .lang-badge { padding: 3px 9px; border-radius: 20px; font-size: 11px; font-weight: 700; }
     .lang-en { background: #e8f4ff; color: #0066cc; }
     .lang-ar { background: #fff3e8; color: #cc6600; }
-    .ins-badge { padding: 3px 9px; border-radius: 20px; font-size: 11px; font-weight: 600; background: #f0fff6; color: #00a651; border: 1px solid #c0e8c0; }
-    .wa-link { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 10px; background: #e8fff2; color: #00a651; text-decoration: none; border: 1px solid #bde8cf; font-size: 17px; transition: all 0.2s; }
-    .wa-link:hover { background: #00a651; color: #fff; transform: translateY(-1px); }
+    .ins-badge { padding: 3px 9px; border-radius: 20px; font-size: 11px; font-weight: 600; background: #f0fff6; color: #004d40; border: 1px solid #c0e8c0; }
+    .wa-link { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 10px; background: #f0f7f5; color: #004d40; text-decoration: none; border: 1px solid #bde8cf; font-size: 17px; transition: all 0.2s; }
+    .wa-link:hover { background: #004d40; color: #fff; transform: translateY(-1px); }
     .email-link { display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 10px; background: #eef4ff; color: #2f6de0; text-decoration: none; border: 1px solid #cfe0ff; font-size: 16px; transition: all 0.2s; }
     .email-link:hover { background: #2f6de0; color: #fff; transform: translateY(-1px); }
     .wa-disabled { color: #bbb; font-size: 12px; }
     .empty { text-align: center; padding: 40px; color: #aaa; font-size: 14px; }
-    .loading { text-align: center; padding: 40px; color: #00a651; font-size: 14px; }
+    .loading { text-align: center; padding: 40px; color: #004d40; font-size: 14px; }
     @media(max-width:900px) { .charts { grid-template-columns: 1fr; } }
     @media(max-width:700px) {
       .wrap { padding: 20px 12px; }
@@ -408,7 +408,7 @@ export default function AdminDashboard() {
         <style>{css}</style>
         <div className="auth-wrap">
           <form className="auth-card" onSubmit={handleAdminLogin}>
-            <div className="auth-title">Tameen24 Admin</div>
+            <div className="auth-title">EliteEstate Admin</div>
             <div className="auth-sub">Only authorized admins can access leads dashboard.</div>
             {loginError ? <div className="auth-err">{loginError}</div> : null}
             <input
@@ -433,9 +433,9 @@ export default function AdminDashboard() {
       <style>{css}</style>
       <div className="wrap">
         <div className="top">
-          <div className="logo">Tameen<span>24</span> — Leads Dashboard</div>
+          <div className="logo">Elite<span>Estate</span> — AI CRM Hub</div>
           <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
-            <div className="badge">Admin Panel</div>
+            <div className="badge">VIP Agent Panel</div>
             <button className="logout-btn" onClick={handleLogout}>Logout</button>
           </div>
         </div>
@@ -443,19 +443,19 @@ export default function AdminDashboard() {
         <div className="stats">
           <div className="stat">
             <div className="stat-val">{leads.length}</div>
-            <div className="stat-lab">Total Leads</div>
+            <div className="stat-lab">Total Prospects</div>
+          </div>
+          <div className="stat">
+            <div className="stat-val">{leads.filter(l => l.score === 'HOT').length || 0}</div>
+            <div className="stat-lab">Hot Leads (High Intent)</div>
           </div>
           <div className="stat">
             <div className="stat-val">{todayLeads}</div>
-            <div className="stat-lab">Today's Leads</div>
+            <div className="stat-lab">Today's Inquiries</div>
           </div>
           <div className="stat">
-            <div className="stat-val">{arLeads}</div>
-            <div className="stat-lab">Arabic Leads</div>
-          </div>
-          <div className="stat">
-            <div className="stat-val">{leads.length - arLeads}</div>
-            <div className="stat-lab">English Leads</div>
+            <div className="stat-val">{leads.filter(l => l.insurance === 'Luxury Villa').length || 0}</div>
+            <div className="stat-lab">Luxury Seekers</div>
           </div>
         </div>
 
@@ -489,7 +489,7 @@ export default function AdminDashboard() {
 
         <div className="charts">
           <div className="chart-card">
-            <div className="chart-title">Leads By Insurance</div>
+            <div className="chart-title">Leads By Property</div>
             {insuranceChart.length === 0 ? (
               <div className="empty-chart">No data for selected filters.</div>
             ) : (
@@ -497,7 +497,7 @@ export default function AdminDashboard() {
                 <div className="bar-row" key={name}>
                   <div className="bar-label" title={name}>{name}</div>
                   <div className="bar-track">
-                    <div className="bar-fill" style={{ width: `${Math.max(5, (count / maxInsurance) * 100)}%` }} />
+                    <div className="bar-fill" style={{ width: `${Math.max(5, (count / maxProperty) * 100)}%` }} />
                   </div>
                   <div className="bar-value">{count}</div>
                 </div>
@@ -539,7 +539,7 @@ export default function AdminDashboard() {
                   <th>WhatsApp</th>
                   <th>Email Action</th>
                   <th>Email</th>
-                  <th>Insurance</th>
+                  <th>Property</th>
                   <th>Lang</th>
                   <th>Time</th>
                 </tr>
@@ -553,7 +553,7 @@ export default function AdminDashboard() {
                     <tr key={lead.id}>
                       <td data-label="#" style={{ color: "#aaa", fontSize: "12px" }}>{i + 1}</td>
                       <td data-label="Name" style={{ fontWeight: "700" }}>{lead.name}</td>
-                      <td data-label="Phone" style={{ color: "#00a651", fontWeight: "600" }}>{lead.phone}</td>
+                      <td data-label="Phone" style={{ color: "#004d40", fontWeight: "600" }}>{lead.phone}</td>
                       <td data-label="WhatsApp">
                         {waLink ? (
                           <a
@@ -585,7 +585,7 @@ export default function AdminDashboard() {
                         )}
                       </td>
                       <td data-label="Email" style={{ color: "#666" }}>{lead.email || "—"}</td>
-                      <td data-label="Insurance"><span className="ins-badge">{lead.insurance}</span></td>
+                      <td data-label="Property"><span className="ins-badge">{lead.insurance}</span></td>
                       <td data-label="Lang"><span className={`lang-badge ${lead.lang === "ar" ? "lang-ar" : "lang-en"}`}>{lead.lang === "ar" ? "AR" : "EN"}</span></td>
                       <td data-label="Time" style={{ color: "#aaa", fontSize: "12px" }}>{lead.timestamp ? new Date(lead.timestamp).toLocaleString() : "—"}</td>
                     </tr>
