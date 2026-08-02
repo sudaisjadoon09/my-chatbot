@@ -12,70 +12,109 @@ const LEAD_SUBMIT_TIMEOUT_MS = 8000;
 const T = {
   en: {
     dir: "ltr",
-    bubbleMsg: "🛡️ Get your insurance quote in 2 minutes!",
-    onlineStatus: "Online · Replies instantly",
-    typing: "Typing...",
-    placeholder: "Type your message...",
-    poweredBy: "Powered by AI · Tameen24",
+    bubbleMsg: "🏡 Find your dream home in US!",
+    onlineStatus: "Agent Online · Premium Support",
+    typing: "AI Agent is thinking...",
+    placeholder: "Ask about properties, areas, or mortgages...",
+    poweredBy: "Premium AI Real Estate Agent · Enterprise Edition",
     quickReplies: [
-      { label: "🚗 Car Insurance", text: "I need car insurance" },
-      { label: "🏥 Medical Insurance", text: "I need medical insurance" },
-      { label: "🏠 Property Insurance", text: "I need property insurance" },
-      { label: "💰 Get a Quote", text: "I want to get a quote" },
-      { label: "📋 Claim Help", text: "I need help with a claim" },
-      { label: "🔄 Renew Policy", text: "I want to renew my policy" },
+      { label: "🏠 Buy a Home", text: "I'm looking to buy a property." },
+      { label: "💰 Home Valuation", text: "How much is my home worth?" },
+      { label: "📈 Market Trends", text: "Tell me about current real estate trends." },
+      { label: "📅 Book a Tour", text: "I want to schedule a property viewing." },
+      { label: "🏦 Mortgage Help", text: "I need information about mortgage rates." },
     ],
-    leadTitle: "Get Your Free Quote",
-    leadSubtitle: "Our expert will contact you within 1 hour",
+    leadTitle: "Premium Property Access",
+    leadSubtitle: "Enter details to get exclusive off-market listings",
     nameLabel: "Full Name", phoneLabel: "Phone Number",
-    emailLabel: "Email Address", insuranceLabel: "Insurance Type",
-    submitBtn: "Get Free Quote →",
-    thankYou: "✅ Thank you! Our agent will call you within 1 hour.",
-    submitSuccessShort: "Quote request submitted successfully.",
-    namePh: "Enter your full name", phonePh: "+971 XX XXX XXXX", emailPh: "your@email.com",
-    insuranceTypes: ["Car Insurance","Medical Insurance","Property Insurance","Marine Insurance","Fire Insurance","Life Insurance","Other"],
-    welcome: "Welcome to Tameen24! 🛡️\n\nI'm your AI insurance assistant. I can help you with:\n• Car & Motor Insurance\n• Medical & Health Insurance\n• Property Insurance\n• Claims & Renewals\n\nHow can I help you today?",
+    emailLabel: "Email Address", insuranceLabel: "Property Type",
+    submitBtn: "Get Exclusive Access →",
+    thankYou: "✅ Success! A Senior Agent will contact you shortly with personalized listings.",
+    submitSuccessShort: "Profile submitted to our VIP database.",
+    namePh: "John Doe", phonePh: "+1 (XXX) XXX-XXXX", emailPh: "john@example.com",
+    insuranceTypes: ["Single Family Home","Luxury Villa","Condo/Apartment","Townhouse","Commercial","Investment Property","Land"],
+    welcome: "Welcome to our Premium Real Estate Concierge! 🏡\n\nI am your AI Property Specialist. Whether you are looking to buy your dream home, sell at the best price, or invest in the US market, I'm here to assist you 24/7.\n\nWhat are you looking for today?",
     langBtn: "عربي",
   },
   ar: {
     dir: "rtl",
-    bubbleMsg: "🛡️ احصل على عرض تأمين خلال دقيقتين!",
-    onlineStatus: "متصل · يرد فوراً",
-    typing: "يكتب...",
-    placeholder: "اكتب رسالتك...",
-    poweredBy: "مدعوم بالذكاء الاصطناعي · تأمين24",
+    bubbleMsg: "🏡 ابحث عن منزل أحلامك في أمريكا!",
+    onlineStatus: "الوكيل متصل · دعم متميز",
+    typing: "الوكيل الذكي يفكر...",
+    placeholder: "اسأل عن العقارات، المناطق، أو الرهن العقاري...",
+    poweredBy: "وكيل عقارات ذكي متميز · نسخة المؤسسات",
     quickReplies: [
-      { label: "🚗 تأمين السيارة", text: "أحتاج تأمين سيارة" },
-      { label: "🏥 التأمين الطبي", text: "أحتاج تأمين طبي" },
-      { label: "🏠 تأمين الممتلكات", text: "أحتاج تأمين ممتلكات" },
-      { label: "💰 احصل على عرض", text: "أريد الحصول على عرض سعر" },
-      { label: "📋 مساعدة في المطالبة", text: "أحتاج مساعدة في المطالبة" },
-      { label: "🔄 تجديد الوثيقة", text: "أريد تجديد وثيقتي" },
+      { label: "🏠 شراء منزل", text: "أبحث عن شراء عقار." },
+      { label: "💰 تقييم العقار", text: "كم تبلغ قيمة منزلي؟" },
+      { label: "📈 اتجاهات السوق", text: "أخبرني عن اتجاهات السوق العقاري حالياً." },
+      { label: "📅 حجز جولة", text: "أريد جدولة موعد لمعاينة عقار." },
+      { label: "🏦 الرهن العقاري", text: "أحتاج معلومات عن أسعار الرهن العقاري." },
     ],
-    leadTitle: "احصل على عرض مجاني",
-    leadSubtitle: "سيتواصل معك خبيرنا خلال ساعة",
+    leadTitle: "وصول حصري للعقارات",
+    leadSubtitle: "أدخل بياناتك للحصول على قوائم عقارات حصرية خارج السوق",
     nameLabel: "الاسم الكامل", phoneLabel: "رقم الهاتف",
-    emailLabel: "البريد الإلكتروني", insuranceLabel: "نوع التأمين",
-    submitBtn: "احصل على عرض مجاني ←",
-    thankYou: "✅ شكراً! سيتصل بك وكيلنا خلال ساعة واحدة.",
-    submitSuccessShort: "تم إرسال طلب عرض السعر بنجاح.",
-    namePh: "أدخل اسمك الكامل", phonePh: "٩٧١ XX XXX XXXX+", emailPh: "بريدك@email.com",
-    insuranceTypes: ["تأمين السيارة","التأمين الطبي","تأمين الممتلكات","التأمين البحري","تأمين الحريق","التأمين على الحياة","أخرى"],
-    welcome: "مرحباً بك في تأمين24! 🛡️\n\nأنا مساعدك الذكي للتأمين. يمكنني مساعدتك في:\n• تأمين السيارات\n• التأمين الطبي والصحي\n• تأمين الممتلكات\n• المطالبات والتجديد\n\nكيف يمكنني مساعدتك اليوم؟",
+    emailLabel: "البريد الإلكتروني", insuranceLabel: "نوع العقار",
+    submitBtn: "احصل على وصول حصري ←",
+    thankYou: "✅ تم بنجاح! سيتصل بك وكيل عقارات خبير قريباً مع قوائم مخصصة.",
+    submitSuccessShort: "تم إرسال ملفك إلى قاعدة بيانات كبار الشخصيات.",
+    namePh: "فلان الفلاني", phonePh: "+1 (XXX) XXX-XXXX", emailPh: "email@example.com",
+    insuranceTypes: ["منزل عائلي","فيلا فاخرة","شقة/كوندو","تاون هاوس","تجاري","عقار استثماري","أرض"],
+    welcome: "مرحباً بك في خدماتنا العقارية المتميزة! 🏡\n\nأنا مساعدك العقاري الذكي. سواء كنت تبحث عن منزل أحلامك، أو ترغب في البيع بأفضل سعر، أو الاستثمار في السوق الأمريكي، أنا هنا لمساعدتك على مدار الساعة.\n\nما الذي تبحث عنه اليوم؟",
     langBtn: "English",
   },
 };
 
-const SYSTEM = {
-  en: `You are an expert AI insurance assistant for Tameen24, a leading UAE insurance company.
-Services: Car Insurance, Medical Insurance, Property Insurance, Liability, Fire, Marine Insurance.
-Coverage: All UAE Emirates - Dubai, Abu Dhabi, Sharjah, Ajman, RAK, Fujairah.
-Rules: Keep answers under 4 sentences. Never give exact prices - say our agent will give the best rate. After 2-3 questions suggest a free quote. Always end with a helpful question.`,
-  ar: `أنت مساعد تأمين ذكي خبير لشركة تأمين24 في الإمارات العربية المتحدة.
-الخدمات: تأمين السيارات، التأمين الطبي، تأمين الممتلكات، تأمين المسؤولية، تأمين الحريق، التأمين البحري.
-التغطية: جميع إمارات الإمارات - دبي، أبوظبي، الشارقة، عجمان، رأس الخيمة، الفجيرة.
-القواعد: اجعل إجاباتك موجزة لا تتجاوز 4 جمل. لا تعطِ أسعاراً محددة. اقترح عرضاً مجانياً بعد 2-3 أسئلة. اختم دائماً بسؤال مفيد.`,
-};
+// --- Dummy Property Data for Frontend Rendering ---
+const LUXURY_PROPERTIES = [
+  {
+    id: 'prop_1',
+    title: 'The Glass Pavilion',
+    price: '$12,500,000',
+    location: 'Beverly Hills, CA',
+    beds: 6, baths: 8, sqft: '14,000',
+    tags: ['Pool', 'View', 'Modern'],
+    image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80'
+  },
+  {
+    id: 'prop_2',
+    title: 'Azure Penthouse',
+    price: '$8,200,000',
+    location: 'Miami Beach, FL',
+    beds: 4, baths: 5, sqft: '5,500',
+    tags: ['Oceanfront', 'Smart Home'],
+    image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80'
+  },
+  {
+    id: 'prop_3',
+    title: 'Skyline Mansion',
+    price: '$25,000,000',
+    location: 'Manhattan, NY',
+    beds: 5, baths: 6, sqft: '8,200',
+    tags: ['Penthouse', 'Central Park View'],
+    image: 'https://images.unsplash.com/photo-1600607687940-c52af096999c?auto=format&fit=crop&w=800&q=80'
+  }
+];
+
+function PropertyCard({ property }) {
+  return (
+    <div className="prop-card">
+      <img src={property.image} alt={property.title} className="prop-img" />
+      <div className="prop-info">
+        <div className="prop-price">{property.price}</div>
+        <div className="prop-title">{property.title}</div>
+        <div className="prop-loc">{property.location}</div>
+        <div style={{ marginBottom: '8px' }}>
+          {property.tags.map(t => <span key={t} className="prop-tag">{t}</span>)}
+        </div>
+        <div className="prop-stats">
+          <span>🛏️ {property.beds} Beds</span>
+          <span>🚿 {property.baths} Baths</span>
+          <span>📏 {property.sqft} sqft</span>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function LeadForm({ lang, onClose }) {
   const t = T[lang];
@@ -195,7 +234,7 @@ function LeadForm({ lang, onClose }) {
   );
 }
 
-export default function Tameen24Chat() {
+export default function LuxeEstateChat() {
   const [lang, setLang] = useState("en");
   const [isOpen, setIsOpen] = useState(false);
   const [showLeadForm, setShowLeadForm] = useState(false);
@@ -275,48 +314,97 @@ export default function Tameen24Chat() {
 
     .demo-bg {
       min-height: 100vh;
-      background: linear-gradient(180deg, #ffffff 0%, #f8fffb 52%, #f3fcf7 100%);
+      background: #0a0f0d; /* Deep Dark Theme for Luxury */
+      color: #fff;
       display: flex; align-items: center; justify-content: center;
-      padding: 28px 20px 110px; position: relative; overflow: hidden;
+      padding: 0; position: relative; overflow: hidden;
+      font-family: 'Plus Jakarta Sans', sans-serif;
     }
-    .demo-bg::before {
-      content: ''; position: absolute; inset: 0;
-      background-image: radial-gradient(circle at 16% 24%, rgba(0,166,81,0.13) 0%, transparent 45%), radial-gradient(circle at 84% 12%, rgba(0,166,81,0.12) 0%, transparent 42%);
-    }
-    .demo-bg::after {
-      content: ''; position: absolute; left: 50%; transform: translateX(-50%); bottom: -140px;
-      width: min(860px, 130vw); height: 280px;
-      background: radial-gradient(ellipse at center, rgba(0, 166, 81, 0.10) 0%, rgba(0, 166, 81, 0.04) 35%, transparent 70%);
-      pointer-events: none;
-    }
-    .hero-panel {
-      width: min(980px, 94vw);
-      position: relative;
-      z-index: 1;
-      border-radius: 30px;
-      border: 1px solid #d9f0e4;
-      background: linear-gradient(180deg, rgba(255,255,255,0.96), rgba(248,255,251,0.98));
-      box-shadow: 0 24px 70px rgba(0, 83, 43, 0.12), 0 2px 0 rgba(255,255,255,0.9) inset;
-      padding: 34px 26px 28px;
+    .hero-section {
+      width: 100%;
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 14px;
+      justify-content: center;
+      background: radial-gradient(circle at top right, rgba(197, 160, 89, 0.15), transparent),
+                  radial-gradient(circle at bottom left, rgba(0, 77, 64, 0.2), transparent);
+      padding: 60px 20px;
+      text-align: center;
     }
-    .hero-tag {
-      padding: 6px 12px;
-      border-radius: 999px;
-      background: #e9fff3;
-      border: 1px solid #c9efdb;
-      color: #0a7f46;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.4px;
+    .luxury-tag {
+      font-size: 12px;
       text-transform: uppercase;
+      letter-spacing: 3px;
+      color: #c5a059; /* Gold Accent */
+      margin-bottom: 20px;
+      font-weight: 700;
     }
-    .demo-logo { width: min(560px, 90vw); height: auto; display: block; position: relative; z-index: 1; filter: drop-shadow(0 8px 20px rgba(0,166,81,0.12)); }
-    .demo-title { color: #0a3b23; font-size: clamp(24px, 4vw, 36px); text-align: center; font-weight: 800; letter-spacing: -0.6px; line-height: 1.2; max-width: 820px; }
-    .demo-sub { color: #0b5f35; font-size: 15px; text-align: center; position: relative; z-index: 1; font-weight: 600; letter-spacing: 0.1px; }
+    .main-title {
+      font-size: clamp(40px, 8vw, 72px);
+      font-weight: 800;
+      line-height: 1;
+      margin-bottom: 24px;
+      background: linear-gradient(to right, #fff, #c5a059);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .sub-title {
+      font-size: 18px;
+      color: #a0a0a0;
+      max-width: 700px;
+      line-height: 1.6;
+      margin-bottom: 40px;
+    }
+    .cta-container {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .btn-premium {
+      padding: 16px 32px;
+      border-radius: 4px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-size: 14px;
+    }
+    .btn-gold {
+      background: #c5a059;
+      color: #0a0f0d;
+      border: none;
+    }
+    .btn-gold:hover { background: #d4b477; transform: translateY(-2px); }
+    .btn-outline {
+      background: transparent;
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+    .btn-outline:hover { border-color: #c5a059; color: #c5a059; }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px;
+      width: 100%;
+      max-width: 1100px;
+      margin-top: 80px;
+    }
+    .feature-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.05);
+      padding: 30px;
+      border-radius: 8px;
+      text-align: left;
+      transition: all 0.3s;
+    }
+    .feature-card:hover { background: rgba(255,255,255,0.06); border-color: #c5a059; }
+    .feature-icon { color: #c5a059; font-size: 24px; margin-bottom: 15px; }
+    .feature-h { font-size: 18px; font-weight: 700; margin-bottom: 10px; color: #fff; }
+    .feature-p { font-size: 14px; color: #888; line-height: 1.5; }
     .demo-shield { width: 74px; height: 74px; border-radius: 20px; margin-bottom: 6px; position: relative; z-index: 1; animation: shieldFloat 3s ease-in-out infinite; background: linear-gradient(135deg, #e9fff3, #d4f8e4); display: flex; align-items: center; justify-content: center; border: 1px solid #b5ebcb; overflow: hidden; }
     .demo-shield img { width: 100%; height: 100%; object-fit: cover; }
     @keyframes shieldFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
@@ -384,49 +472,65 @@ export default function Tameen24Chat() {
       .chat-bubble-note { font-size: 10px; padding: 5px 8px; right: 20px; }
     }
 
-    .head { background: linear-gradient(135deg, #00a651, #007a3d); padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+    .head { background: linear-gradient(135deg, #004d40, #002d26); padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
     .hl { display: flex; align-items: center; gap: 11px; }
-    .hav { width: 42px; height: 42px; background: rgba(255,255,255,0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; position: relative; border: 2px solid rgba(255,255,255,0.3); color: #d6ffe8; overflow: hidden; }
+    .hav { width: 42px; height: 42px; background: rgba(255,255,255,0.15); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; position: relative; border: 1px solid rgba(255,255,255,0.2); color: #fff; overflow: hidden; }
     .chatbot-icon { width: 100%; height: 100%; object-fit: cover; }
-    .hav::after { content: ''; position: absolute; bottom: -2px; right: -2px; width: 10px; height: 10px; background: #a8ffce; border-radius: 50%; border: 2px solid #007a3d; }
+    .hav::after { content: ''; position: absolute; bottom: -2px; right: -2px; width: 10px; height: 10px; background: #c5a059; border-radius: 50%; border: 2px solid #002d26; }
     .hname { font-weight: 800; font-size: 15px; color: #fff; }
-    .hstat { font-size: 11px; color: rgba(255,255,255,0.8); margin-top: 1px; display: flex; align-items: center; gap: 4px; }
-    .sp { width: 6px; height: 6px; background: #a8ffce; border-radius: 50%; animation: sp 2s infinite; }
+    .hstat { font-size: 11px; color: rgba(255,255,255,0.7); margin-top: 1px; display: flex; align-items: center; gap: 4px; }
+    .sp { width: 6px; height: 6px; background: #c5a059; border-radius: 50%; animation: sp 2s infinite; }
     @keyframes sp { 0%,100%{opacity:1} 50%{opacity:0.4} }
-    .hbtn { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: #fff; padding: 5px 10px; cursor: pointer; font-size: 11px; font-weight: 600; font-family: inherit; transition: all 0.2s; }
-    .hbtn:hover { background: rgba(255,255,255,0.25); }
+    .hbtn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; color: #fff; padding: 5px 10px; cursor: pointer; font-size: 11px; font-weight: 600; font-family: inherit; transition: all 0.2s; }
+    .hbtn:hover { background: rgba(255,255,255,0.2); }
 
-    .msgs { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 12px; background: #f8fafb; }
+    .msgs { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 12px; background: #fdfdfd; }
     .msgs::-webkit-scrollbar { width: 3px; }
     .msgs::-webkit-scrollbar-thumb { background: #ddd; border-radius: 3px; }
     .mr { display: flex; gap: 8px; animation: ms 0.25s ease; }
     .mr.user { flex-direction: row-reverse; }
     @keyframes ms { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
     .mav { width: 30px; height: 30px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; margin-top: 2px; }
-    .mav.bot { background: #e8fff2; border: 1px solid #bce9cf; overflow: hidden; }
-    .mav.usr { background: #e8f4ff; border: 1px solid #c0d8f0; }
+    .mav.bot { background: #f0f7f5; border: 1px solid #d1e2dd; overflow: hidden; }
+    .mav.usr { background: #f5f5f5; border: 1px solid #e0e0e0; }
     .mb2 { max-width: 76%; display: flex; flex-direction: column; gap: 3px; }
     .bub { padding: 10px 13px; font-size: 13.5px; line-height: 1.55; white-space: pre-wrap; }
-    .bub.bot { background: #fff; color: #1a1a2e; border-radius: 4px 16px 16px 16px; border: 1px solid #e8edf2; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-    .bub.usr { background: linear-gradient(135deg,#00a651,#007a3d); color: #fff; border-radius: 16px 4px 16px 16px; }
+    .bub.bot { background: #fff; color: #1a1a2e; border-radius: 4px 16px 16px 16px; border: 1px solid #e8edf2; box-shadow: 0 1px 4px rgba(0,0,0,0.06); overflow: hidden; }
+    
+    .prop-card {
+      margin-top: 10px;
+      border: 1px solid #eee;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #fff;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      max-width: 300px;
+    }
+    .prop-img { width: 100%; height: 160px; object-fit: cover; }
+    .prop-info { padding: 12px; }
+    .prop-price { color: #c5a059; font-weight: 800; font-size: 18px; margin-bottom: 4px; }
+    .prop-title { font-weight: 700; font-size: 14px; margin-bottom: 2px; }
+    .prop-loc { font-size: 12px; color: #888; margin-bottom: 8px; }
+    .prop-stats { display: flex; gap: 10px; font-size: 11px; color: #555; font-weight: 600; border-top: 1px solid #f5f5f5; padding-top: 8px; }
+    .prop-tag { background: #f0f7f5; color: #004d40; padding: 2px 6px; border-radius: 4px; font-size: 10px; margin-right: 4px; }
     .mt { font-size: 10px; color: #aaa; padding: 0 3px; }
     .mr.user .mt { text-align: right; }
     .tb { background: #fff; border: 1px solid #e8edf2; border-radius: 4px 16px 16px 16px; padding: 12px 16px; display: flex; gap: 4px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
-    .td { width: 7px; height: 7px; background: #00a651; border-radius: 50%; animation: td 1.2s infinite; }
+    .td { width: 7px; height: 7px; background: #004d40; border-radius: 50%; animation: td 1.2s infinite; }
     @keyframes td { 0%,60%,100%{transform:translateY(0);opacity:0.4} 30%{transform:translateY(-6px);opacity:1} }
 
-    .qr { padding: 8px 16px 10px; display: flex; flex-wrap: wrap; gap: 6px; flex-shrink: 0; background: #f8fafb; border-top: 1px solid #f0f0f0; }
-    .qb { background: #fff; border: 1.5px solid #00a651; border-radius: 20px; color: #00a651; padding: 5px 12px; font-size: 11.5px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all 0.2s; }
-    .qb:hover { background: #00a651; color: #fff; transform: translateY(-1px); }
+    .qr { padding: 8px 16px 10px; display: flex; flex-wrap: wrap; gap: 6px; flex-shrink: 0; background: #fdfdfd; border-top: 1px solid #f0f0f0; }
+    .qb { background: #fff; border: 1.5px solid #004d40; border-radius: 20px; color: #004d40; padding: 5px 12px; font-size: 11.5px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all 0.2s; }
+    .qb:hover { background: #004d40; color: #fff; transform: translateY(-1px); }
 
-    .lfw { flex-shrink: 0; border-top: 2px solid #00a651; max-height: 340px; overflow-y: auto; background: linear-gradient(180deg,#f0fff6,#fff); }
+    .lfw { flex-shrink: 0; border-top: 2px solid #004d40; max-height: 340px; overflow-y: auto; background: linear-gradient(180deg,#f8faf9,#fff); }
 
     .ia { padding: 10px 14px 13px; border-top: 1px solid #eee; flex-shrink: 0; background: #fff; }
     .ir { display: flex; gap: 8px; align-items: center; }
     .inp { flex: 1; padding: 10px 14px; border: 1.5px solid #e0e0e0; border-radius: 12px; font-size: 13px; font-family: inherit; outline: none; transition: border-color 0.2s; color: #1a1a2e; }
-    .inp:focus { border-color: #00a651; }
+    .inp:focus { border-color: #004d40; }
     .inp::placeholder { color: #bbb; }
-    .snd { width: 40px; height: 40px; background: linear-gradient(135deg,#00a651,#007a3d); border: none; border-radius: 12px; color: #fff; cursor: pointer; font-size: 17px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; flex-shrink: 0; box-shadow: 0 3px 10px rgba(0,166,81,0.35); }
+    .snd { width: 40px; height: 40px; background: linear-gradient(135deg,#004d40,#002d26); border: none; border-radius: 12px; color: #fff; cursor: pointer; font-size: 17px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; flex-shrink: 0; box-shadow: 0 3px 10px rgba(0,77,64,0.3); }
     .snd:hover:not(:disabled) { transform: translateY(-1px); }
     .snd:disabled { opacity: 0.4; cursor: not-allowed; }
     .pw { text-align: center; font-size: 10px; color: #ccc; margin-top: 6px; }
@@ -436,37 +540,35 @@ export default function Tameen24Chat() {
     <>
       <style>{css}</style>
 
-      {/* Demo page */}
+      {/* Premium Landing Page */}
       <div className="demo-bg">
-        <div className="hero-panel">
-          <div className="hero-tag">Trusted UAE Insurance Marketplace</div>
-          <div className="demo-shield"><img src={chatbotIcon} alt="Chatbot" /></div>
-          <img src={tameenLogo} alt="Tameen24 logo" className="demo-logo" />
-          <div className="demo-title">Compare plans, get expert guidance, and secure your policy with confidence.</div>
-          <div className="demo-sub">Your Trusted Insurance Partner in UAE</div>
-          <div className="demo-cards">
-            {[ ["🚗","Car"],["🏥","Medical"],["🏠","Property"],["⛵","Marine"],["🔥","Fire"],["👨‍👩‍👧‍👦","Life"]].map(([i,l]) => (
-              <div key={l} className="demo-card">
-                <div className="demo-card-icon">{i}</div>
-                <div className="demo-card-label">{l}</div>
+        <div className="hero-section">
+          <div className="luxury-tag">LuxeEstate AI — Sovereign Edition</div>
+          <h1 className="main-title">The Future of Luxury Real Estate Automation</h1>
+          <p className="sub-title">
+            Empower your agency with autonomous AI Sales Representatives. 
+            Qualified leads, intelligent property analysis, and seamless VIP bookings — all in one sovereign suite.
+          </p>
+          
+          <div className="cta-container">
+            <button className="btn-premium btn-gold" onClick={() => setIsOpen(true)}>Initialize AI Concierge</button>
+            <button className="btn-premium btn-outline">Watch Enterprise Demo</button>
+          </div>
+
+          <div className="feature-grid">
+            {[
+              { icon: "⚡", h: "Lead Acceleration", p: "Convert website traffic into hot, qualified leads in under 60 seconds with behavioral analysis." },
+              { icon: "💎", h: "VIP Experience", p: "Provide high-net-worth clients with 24/7 personalized property guidance in multiple languages." },
+              { icon: "📉", h: "Predictive CRM", p: "AI-driven lead scoring that prioritizes high-value prospects for your senior agents." },
+              { icon: "📅", h: "Autonomous Booking", p: "Directly schedule property tours and consultations without human intervention." }
+            ].map(f => (
+              <div key={f.h} className="feature-card">
+                <div className="feature-icon">{f.icon}</div>
+                <div className="feature-h">{f.h}</div>
+                <div className="feature-p">{f.p}</div>
               </div>
             ))}
           </div>
-          <div className="hero-stats">
-            <div className="hero-stat">
-              <div className="hero-stat-value">24/7</div>
-              <div className="hero-stat-label">AI Assistant</div>
-            </div>
-            <div className="hero-stat">
-              <div className="hero-stat-value">1 hr</div>
-              <div className="hero-stat-label">Agent Callback</div>
-            </div>
-            <div className="hero-stat">
-              <div className="hero-stat-value">All UAE</div>
-              <div className="hero-stat-label">Coverage Support</div>
-            </div>
-          </div>
-          <div className="demo-hint">Try our AI assistant. Click the green button below.</div>
         </div>
       </div>
 
@@ -485,7 +587,7 @@ export default function Tameen24Chat() {
             <div className="hl">
               <div className="hav"><img src={chatbotIcon} alt="Chatbot" className="chatbot-icon" /></div>
               <div>
-                <div className="hname">Tameen24 AI</div>
+                <div className="hname">LuxeEstate Concierge</div>
                 <div className="hstat">
                   <div className="sp" />
                   {isTyping ? t.typing : t.onlineStatus}
@@ -505,7 +607,15 @@ export default function Tameen24Chat() {
                   {msg.role === "user" ? "👤" : <img src={chatbotIcon} alt="Bot" className="chatbot-icon" />}
                 </div>
                 <div className="mb2">
-                  <div className={`bub ${msg.role === "user" ? "usr" : "bot"}`}>{msg.content}</div>
+                  <div className={`bub ${msg.role === "user" ? "usr" : "bot"}`}>
+                    {msg.content}
+                    {!msg.role !== 'user' && LUXURY_PROPERTIES.map(p => {
+                      if (msg.content.includes(p.title)) {
+                        return <PropertyCard key={p.id} property={p} />;
+                      }
+                      return null;
+                    })}
+                  </div>
                   <div className="mt">{msg.time}</div>
                 </div>
               </div>
