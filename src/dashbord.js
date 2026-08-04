@@ -386,8 +386,6 @@ export default function AdminDashboard() {
     return d.toDateString() === today.toDateString();
   }).length;
 
-  const arLeads = leads.filter(l => l.lang === "ar").length;
-
   if (authLoading) {
     return (
       <>

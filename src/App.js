@@ -1,5 +1,4 @@
 import { useState, useRef, useEffect } from "react";
-import tameenLogo from "./assets/tameen24-logo.jpeg";
 import chatbotIcon from "./assets/chatbot-icon.svg";
 
 const DEFAULT_RAILWAY_BASE_URL = "https://my-chatbot-production-7d09.up.railway.app";
@@ -62,6 +61,25 @@ const T = {
     welcome: "مرحباً بك في خدماتنا العقارية المتميزة! 🏡\n\nأنا مساعدك العقاري الذكي. سواء كنت تبحث عن منزل أحلامك، أو ترغب في البيع بأفضل سعر، أو الاستثمار في السوق الأمريكي، أنا هنا لمساعدتك على مدار الساعة.\n\nما الذي تبحث عنه اليوم؟",
     langBtn: "English",
   },
+};
+
+const SYSTEM = {
+  en: `You are a premium AI real estate assistant for LuxeEstate.
+Your job is to answer property questions, recommend homes from the provided listings, and qualify interested leads.
+
+Rules:
+1. Keep responses concise, professional, and high-end.
+2. When the user asks about budget, location, or listings, recommend 1 or 2 suitable properties.
+3. If the user shows interest in a property, ask for contact details.
+4. Never invent property details that are not in the provided listings.`,
+  ar: `أنت مساعد عقاري ذكي ومتميز لشركة LuxeEstate.
+مهمتك هي الإجابة عن أسئلة العقارات، واقتراح منازل من القوائم المتاحة، وتأهيل العملاء المهتمين.
+
+القواعد:
+1. اجعل الردود مختصرة واحترافية وفاخرة.
+2. عندما يسأل المستخدم عن الميزانية أو الموقع أو القوائم، اقترح عقاراً أو عقارين مناسبين.
+3. إذا أظهر المستخدم اهتماماً بعقار معين، اطلب بيانات التواصل.
+4. لا تخترع تفاصيل عقارية غير موجودة في القوائم المتاحة.`,
 };
 
 // --- Dummy Property Data for Frontend Rendering ---
