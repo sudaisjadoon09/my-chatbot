@@ -1,7 +1,10 @@
 import { useState, useEffect, useCallback } from "react";
 
 const DEFAULT_RAILWAY_BASE_URL = "https://my-chatbot-production-7d09.up.railway.app";
-const API_BASE_URL = (process.env.REACT_APP_API_BASE_URL || DEFAULT_RAILWAY_BASE_URL).replace(/\/$/, "");
+const RUNTIME_LOCAL_FALLBACK = (typeof window !== "undefined" && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'))
+  ? 'http://localhost:3001'
+  : DEFAULT_RAILWAY_BASE_URL;
+const API_BASE_URL = (process.env.REACT_APP_API_BASE_URL || RUNTIME_LOCAL_FALLBACK).replace(/\/$/, "");
 
 const LEADS_URL = `${API_BASE_URL}/api/leads`;
 const ADMIN_LOGIN_URL = `${API_BASE_URL}/api/admin/login`;

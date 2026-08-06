@@ -2,7 +2,13 @@ import { useState, useRef, useEffect } from "react";
 import chatbotIcon from "./assets/chatbot-icon.svg";
 
 const DEFAULT_RAILWAY_BASE_URL = "https://my-chatbot-production-7d09.up.railway.app";
-const API_BASE_URL = (process.env.REACT_APP_API_BASE_URL || DEFAULT_RAILWAY_BASE_URL).replace(/\/$/, "");
+// At runtime prefer an explicit env var, otherwise if running on localhost
+// use a local backend fallback. This prevents "Connection error" when
+// developing without setting REACT_APP_API_BASE_URL.
+const RUNTIME_LOCAL_FALLBACK = (typeof window !== "undefined" && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'))
+  ? 'http://localhost:3001'
+  : DEFAULT_RAILWAY_BASE_URL;
+const API_BASE_URL = (process.env.REACT_APP_API_BASE_URL || RUNTIME_LOCAL_FALLBACK).replace(/\/$/, "");
 
 const API_URL = `${API_BASE_URL}/api/chat`;
 const LEADS_URL = `${API_BASE_URL}/api/lead`;
